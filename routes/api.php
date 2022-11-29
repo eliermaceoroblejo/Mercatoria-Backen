@@ -35,11 +35,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('v1/auth/logout', [AuthController::class, 'logout']);
 
     // Currencies
-    Route::post('v1/currencies', [CurrenciesController::class, 'getCurrencies']);
-    Route::post('v1/currencies/add', [CurrenciesController::class, 'addCurrency']);
-    Route::post('v1/currencies/{id}', [CurrenciesController::class, 'getCurrencyById']);
-    Route::put('v1/currencies/{id}', [CurrenciesController::class, 'editCurrency']);
-    Route::delete('v1/currencies/{id}', [CurrenciesController::class, 'deleteCurrency']);
+    Route::post('v1/currencies/all', [CurrenciesController::class, 'getCurrencies']);
+    Route::post('v1/currencies/byId', [CurrenciesController::class, 'getCurrencyById']);
+    Route::post('v1/currencies/', [CurrenciesController::class, 'addCurrency']);
+    Route::put('v1/currencies/', [CurrenciesController::class, 'editCurrency']);
+    Route::delete('v1/currencies/', [CurrenciesController::class, 'deleteCurrency']);
 
     //Accounts
     Route::post('v1/accounts/nature', [AccountNatureController::class, 'getAccountNature']);

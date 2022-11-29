@@ -8,10 +8,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property integer $id
  * @property integer $modules_id
  * @property integer $user_id
+ * @property integer $bussiness_id
  * @property float $total_debit
  * @property float $total_credit
  * @property string $created_at
  * @property string $updated_at
+ * @property Bussiness $bussiness
  * @property Module $module
  * @property User $user
  * @property OperationDetail[] $operationDetails
@@ -28,9 +30,15 @@ class Operation extends Model
     /**
      * @var array
      */
-    protected $fillable = ['modules_id', 'user_id', 'total_debit', 'total_credit'];
+    protected $fillable = ['modules_id', 'user_id', 'bussiness_id', 'total_debit', 'total_credit', 'created_at', 'updated_at'];
 
-    protected $hidden = ['created_at', 'updated_at'];
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function bussiness()
+    {
+        return $this->belongsTo('App\Models\Bussiness');
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

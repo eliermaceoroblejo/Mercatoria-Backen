@@ -6,11 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property integer $id
+ * @property integer $bussiness_id
  * @property string $name
  * @property string $abbreviation
  * @property boolean $unitary
  * @property string $created_at
  * @property string $updated_at
+ * @property Bussiness $bussiness
  * @property Product[] $products
  */
 class Unit extends Model
@@ -25,9 +27,15 @@ class Unit extends Model
     /**
      * @var array
      */
-    protected $fillable = ['name', 'abbreviation', 'unitary'];
+    protected $fillable = ['bussiness_id', 'name', 'abbreviation', 'unitary', 'created_at', 'updated_at'];
 
-    protected $hidden = ['created_at', 'updated_at'];
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function bussiness()
+    {
+        return $this->belongsTo('App\Models\Bussiness');
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

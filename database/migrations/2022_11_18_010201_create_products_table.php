@@ -14,9 +14,10 @@ return new class extends Migration
     public function up()
     {
         Schema::create('products', function (Blueprint $table) {
-            // $table->id();
-            $table->integer('id')->unsigned()->unique();
+            $table->id();
+            $table->integer('code')->unsigned();
             $table->foreignId('unit_id')->references('id')->on('units');
+            $table->foreignId('bussiness_id')->references('id')->on('bussinesses');
             $table->timestamps();
         });
     }

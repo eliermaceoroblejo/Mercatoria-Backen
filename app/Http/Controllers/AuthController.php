@@ -51,6 +51,10 @@ class AuthController extends Controller
             ]);
         }
 
+        if ($user->current_bussiness == null) {
+            $user->current_bussiness = 0;
+        }
+
         if (!Auth::attempt($request->only('email', 'password'))) {
             return response()->json([
                 'status' => false,
@@ -137,7 +141,8 @@ class AuthController extends Controller
         ]);
     }
 
-    public function logout(Request $request) {
+    public function logout(Request $request)
+    {
         $request->user()->tokens()->delete();
         return response()->json([
             'status' => true,

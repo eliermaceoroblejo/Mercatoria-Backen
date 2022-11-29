@@ -16,9 +16,10 @@ return new class extends Migration
         Schema::create('movements', function (Blueprint $table) {
             $table->id();
             $table->foreignId('movement_type_id')->references('id')->on('movement_types');
-            $table->integer('user_id')->unsigned();
+            $table->foreignId('user_id')->references('id')->on('users');
             $table->foreignId('store_id')->references('id')->on('stores');
             $table->foreignId('client_id')->references('id')->on('clients')->nullable();
+            $table->foreignId('bussiness_id')->references('id')->on('bussinesses');
             $table->double('total');
             $table->timestamps();
         });

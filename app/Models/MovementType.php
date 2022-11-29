@@ -25,9 +25,7 @@ class MovementType extends Model
     /**
      * @var array
      */
-    protected $fillable = ['name', 'in_out'];
-
-    protected $hidden = ['created_at', 'updated_at'];
+    protected $fillable = ['name', 'in_out', 'created_at', 'updated_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

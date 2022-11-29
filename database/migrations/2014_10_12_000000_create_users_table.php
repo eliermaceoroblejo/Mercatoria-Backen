@@ -21,6 +21,7 @@ return new class extends Migration
             $table->integer('pin')->nullable();
             $table->dateTime('pin_expired_in')->nullable();
             $table->timestamp('email_verified_at')->nullable();
+            $table->integer('current_bussiness')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

@@ -17,15 +17,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             AccountTypesSeeder::class,
             AccountNatureSeeder::class,
-            CurrenciesSeeder::class,
+            // CurrenciesSeeder::class,
             UserSeeder::class,
             AccountGroupsSeeder::class,
             MovementTypesSeeder::class
         ]);
-        // $this->call(AccountTypesSeeder::class);
-        // $this->call(AccountNatureSeeder::class);
-        // $this->call(CurrenciesSeeder::class);
-        // $this->call(UserSeeder::class);
-        // $this->call(AccountGroupsSeeder::class);
     }
 }

@@ -16,7 +16,8 @@ return new class extends Migration
         Schema::create('operations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('modules_id')->references('id')->on('modules');
-            $table->integer('user_id')->unsigned();
+            $table->foreignId('user_id')->references('id')->on('users');
+            $table->foreignId('bussiness_id')->references('id')->on('bussinesses');
             $table->double('total_debit')->default(0);
             $table->double('total_credit')->default(0);
             $table->timestamps();

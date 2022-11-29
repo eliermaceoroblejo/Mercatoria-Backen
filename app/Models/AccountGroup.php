@@ -2,13 +2,18 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property integer $id
+ * @property string $code
+ * @property string $name
+ * @property string $created_at
+ * @property string $updated_at
+ * @property Account[] $accounts
+ */
 class AccountGroup extends Model
 {
-    use HasFactory;
-
     /**
      * The "type" of the auto-incrementing ID.
      * 
@@ -16,17 +21,16 @@ class AccountGroup extends Model
      */
     protected $keyType = 'integer';
 
-    protected $fillable = ['name', 'start', 'end'];
-
-    protected $hidden = ['created_at', 'updated_at'];
+    /**
+     * @var array
+     */
+    protected $fillable = ['code', 'name', 'created_at', 'updated_at'];
 
     /**
-     * Get all of the accounts for the AccountGroup
-     *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function accounts()
     {
-        return $this->hasMany(Account::class);
+        return $this->hasMany('App\Models\Account');
     }
 }

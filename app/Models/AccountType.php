@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $name
  * @property string $created_at
  * @property string $updated_at
+ * @property Account[] $accounts
  */
 class AccountType extends Model
 {
@@ -22,15 +23,13 @@ class AccountType extends Model
     /**
      * @var array
      */
-    protected $fillable = ['name'];
-
-    protected $hidden = ['created_at', 'updated_at'];
+    protected $fillable = ['name', 'created_at', 'updated_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function accounts()
     {
-        return $this->hasMany('App\Models\Accounts');
+        return $this->hasMany('App\Models\Account', 'account_type');
     }
 }

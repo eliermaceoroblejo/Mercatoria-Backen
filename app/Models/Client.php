@@ -6,9 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property integer $id
+ * @property integer $bussiness_id
+ * @property string $code
  * @property string $name
  * @property string $created_at
  * @property string $updated_at
+ * @property Bussiness $bussiness
  * @property Movement[] $movements
  */
 class Client extends Model
@@ -23,9 +26,15 @@ class Client extends Model
     /**
      * @var array
      */
-    protected $fillable = ['code', 'name'];
+    protected $fillable = ['bussiness_id', 'code', 'name', 'created_at', 'updated_at'];
 
-    protected $hidden = ['created_at', 'updated_at'];
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function bussiness()
+    {
+        return $this->belongsTo('App\Models\Bussiness');
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -33,5 +42,15 @@ class Client extends Model
     public function movements()
     {
         return $this->hasMany('App\Models\Movement');
+    }
+
+    /**
+     * Get all of the operations for the Client
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function operations()
+    {
+        return $this->hasMany(ClientOperations::class);
     }
 }

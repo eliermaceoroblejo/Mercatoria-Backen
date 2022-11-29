@@ -7,12 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @property integer $id
  * @property string $name
- * @property string $month
- * @property string $year
  * @property string $created_at
  * @property string $updated_at
  * @property Operation[] $operations
  * @property OperationDetail[] $operationDetails
+ * @property ModuleBussiness[] $moduleBussinesses
  */
 class Module extends Model
 {
@@ -26,9 +25,7 @@ class Module extends Model
     /**
      * @var array
      */
-    protected $fillable = ['name', 'month', 'year'];
-
-    protected $hidden = ['created_at', 'updated_at'];
+    protected $fillable = ['name', 'created_at', 'updated_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -44,5 +41,13 @@ class Module extends Model
     public function operationDetails()
     {
         return $this->hasMany('App\Models\OperationDetail');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function moduleBussinesses()
+    {
+        return $this->hasMany('App\Models\ModuleBussiness');
     }
 }

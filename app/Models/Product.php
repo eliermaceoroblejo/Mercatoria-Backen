@@ -5,29 +5,37 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property integer $unit_id
  * @property integer $id
+ * @property integer $unit_id
+ * @property integer $bussiness_id
+ * @property integer $code
  * @property string $created_at
  * @property string $updated_at
- * @property Unit $unit
- * @property MovementDetail[] $movementDetails
  * @property StoreProduct[] $storeProducts
+ * @property MovementDetail[] $movementDetails
+ * @property Bussiness $bussiness
+ * @property Unit $unit
  */
 class Product extends Model
 {
     /**
-     * @var array
+     * The "type" of the auto-incrementing ID.
+     * 
+     * @var string
      */
-    protected $fillable = ['unit_id', 'id'];
-
-    protected $hidden = ['created_at', 'updated_at'];
+    protected $keyType = 'integer';
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @var array
      */
-    public function unit()
+    protected $fillable = ['unit_id', 'bussiness_id', 'code', 'created_at', 'updated_at'];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function storeProducts()
     {
-        return $this->belongsTo('App\Models\Unit');
+        return $this->hasMany('App\Models\StoreProduct');
     }
 
     /**
@@ -39,10 +47,18 @@ class Product extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function storeProducts()
+    public function bussiness()
     {
-        return $this->hasMany('App\Models\StoreProduct');
+        return $this->belongsTo('App\Models\Bussiness');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function unit()
+    {
+        return $this->belongsTo('App\Models\Unit');
     }
 }

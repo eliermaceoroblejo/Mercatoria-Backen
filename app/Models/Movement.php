@@ -7,13 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @property integer $id
  * @property integer $movement_type_id
- * @property integer $store_id
  * @property integer $user_id
+ * @property integer $store_id
  * @property integer $client_id
+ * @property integer $bussiness_id
  * @property float $total
  * @property string $created_at
  * @property string $updated_at
  * @property MovementDetail[] $movementDetails
+ * @property Bussiness $bussiness
  * @property Client $client
  * @property MovementType $movementType
  * @property Store $store
@@ -31,9 +33,7 @@ class Movement extends Model
     /**
      * @var array
      */
-    protected $fillable = ['movement_type_id', 'store_id', 'user_id', 'client_id', 'total'];
-
-    protected $hidden = ['created_at', 'updated_at'];
+    protected $fillable = ['movement_type_id', 'user_id', 'store_id', 'client_id', 'bussiness_id', 'total', 'created_at', 'updated_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -41,6 +41,14 @@ class Movement extends Model
     public function movementDetails()
     {
         return $this->hasMany('App\Models\MovementDetail');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function bussiness()
+    {
+        return $this->belongsTo('App\Models\Bussiness');
     }
 
     /**

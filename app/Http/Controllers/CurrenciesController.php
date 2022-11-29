@@ -17,13 +17,13 @@ class CurrenciesController extends Controller
     {
         return response()->json([
             'status' => true,
-            'data' => Currency::orderBy('id', 'asc')->get()
+            'data' => Currency::with('bussiness')->where('bussiness_id', $request->bussines_id)->orderBy('id', 'asc')->get()
         ]);
     }
 
-    public function getCurrencyById($id)
+    public function getCurrencyById(Request $request)
     {
-        $currency = Currency::where('id', $id)->first();
+        $currency = Currency::where('id', $request->id)->first();
         if (!$currency) {
             return response()->json([
                 'status' => true,
@@ -72,7 +72,7 @@ class CurrenciesController extends Controller
         ]);
     }
 
-    public function editCurrency(Request $request, $id)
+    public function editCurrency(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
@@ -86,7 +86,7 @@ class CurrenciesController extends Controller
             ]);
         }
 
-        $currency = Currency::whereId($id)->first();
+        $currency = Currency::whereId($request->id)->first();
         if (!$currency) {
             return response()->json([
                 'status' => false,
@@ -106,9 +106,9 @@ class CurrenciesController extends Controller
         ]);
     }
 
-    public function deleteCurrency($id)
+    public function deleteCurrency(Request $request)
     {
-        $currency = Currency::whereId($id)->first();
+        $currency = Currency::whereId($request->id)->first();
         if (!$currency) {
             return response()->json([
                 'status' => false,
@@ -116,7 +116,7 @@ class CurrenciesController extends Controller
             ]);
         }
 
-        $account = Account::where('currency_id', $id)->first();
+        $account = Account::where('currency_id', $request->id)->first();
 
         if ($account) {
             return response()->json([

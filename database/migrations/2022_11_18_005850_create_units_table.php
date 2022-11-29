@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('abbreviation')->unique();
             $table->boolean('unitary');
+            $table->foreignId('bussiness_id')->references('id')->on('bussinesses');
             $table->timestamps();
         });
     }

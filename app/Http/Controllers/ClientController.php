@@ -19,9 +19,9 @@ class ClientController extends Controller
         ]);
     }
 
-    public function getById(Request $request, $id)
+    public function getById(Request $request)
     {
-        $client = Client::whereId($id)->first();
+        $client = Client::whereId($request->id)->first();
         if (!$client) {
             return response()->json([
                 'status' => false,
@@ -29,7 +29,7 @@ class ClientController extends Controller
             ], 400);
         }
 
-        $clientMovements = Movement::where('client_id', $id)->get();
+        $clientMovements = Movement::where('client_id', $request->id)->get();
 
         $client->editable = $clientMovements->count() == 0;
 
@@ -40,9 +40,9 @@ class ClientController extends Controller
         ]);
     }
 
-    public function getByCode(Request $request, $code)
+    public function getByCode(Request $request)
     {
-        $client = Client::where('code', 'like', '%' . $code . '%')->first();
+        $client = Client::where('code', 'like', '%' . $request->code . '%')->first();
         if (!$client) {
             return response()->json([
                 'status' => false,
@@ -50,7 +50,7 @@ class ClientController extends Controller
             ], 400);
         }
 
-        $clientMovements = Movement::where('client_id', $code)->get();
+        $clientMovements = Movement::where('client_id', $request->code)->get();
 
         $client->editable = $clientMovements->count() == 0;
 
@@ -61,9 +61,9 @@ class ClientController extends Controller
         ]);
     }
 
-    public function getByDescription(Request $request, $description)
+    public function getByDescription(Request $request)
     {
-        $client = Client::where('description', 'like', '$' . $description . '%')->first();
+        $client = Client::where('description', 'like', '$' . $request->description . '%')->first();
         if (!$client) {
             return response()->json([
                 'status' => false,
@@ -114,7 +114,7 @@ class ClientController extends Controller
         ], 201);
     }
 
-    public function editClient(Request $request, $id)
+    public function editClient(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'code' => 'required|string|max:255',
@@ -128,7 +128,7 @@ class ClientController extends Controller
             ], 400);
         }
 
-        $client = Client::whereId($id)->first();
+        $client = Client::whereId($request->id)->first();
         if (!$client) {
             return response()->json([
                 'status' => false,
@@ -147,9 +147,9 @@ class ClientController extends Controller
         ]);
     }
 
-    public function deleteClient(Request $request, $id)
+    public function deleteClient(Request $request)
     {
-        $client = Client::whereId($id)->first();
+        $client = Client::whereId($request->id)->first();
         if (!$client) {
             return response()->json([
                 'status' => false,
@@ -157,7 +157,7 @@ class ClientController extends Controller
             ], 400);
         }
 
-        $clientMovements = Movement::where('client_id', $id)->get();
+        $clientMovements = Movement::where('client_id', $request->id)->get();
         if ($clientMovements && $clientMovements->count() > 0) {
             return response()->json([
                 'status' => false,
@@ -166,5 +166,10 @@ class ClientController extends Controller
         }
 
         $client->delete();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Cliente eliminado'
+        ]);
     }
 }

@@ -14,9 +14,10 @@ return new class extends Migration
     public function up()
     {
         Schema::create('operation_details', function (Blueprint $table) {
-            // $table->id();
+            $table->id();
             $table->foreignId('operation_id')->references('id')->on('operations');
             $table->foreignId('account_id')->references('id')->on('accounts');
+            // $table->integer('account_id')->unsigned();
             $table->foreignId('module_id')->references('id')->on('modules');
             $table->double('credit');
             $table->double('debit');

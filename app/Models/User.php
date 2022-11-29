@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Model;
+
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
-
-// use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property integer $id
@@ -15,11 +15,13 @@ use Laravel\Sanctum\HasApiTokens;
  * @property integer $pin
  * @property string $pin_expired_in
  * @property string $email_verified_at
+ * @property integer $current_bussiness
  * @property string $remember_token
  * @property string $created_at
  * @property string $updated_at
- * @property Operation[] $operations
+ * @property Bussiness[] $bussinesses
  * @property Movement[] $movements
+ * @property Operation[] $operations
  */
 class User extends Authenticatable
 {
@@ -35,8 +37,29 @@ class User extends Authenticatable
     /**
      * @var array
      */
-    protected $fillable = ['name', 'email', 'password'];
+    protected $fillable = ['name', 'email', 'password', 'pin', 'pin_expired_in', 'email_verified_at', 'current_bussiness', 'remember_token', 'created_at', 'updated_at'];
 
-    protected $hidden = ['pin', 'pin_expired_in', 'email_verified_at', 'remember_token', 'created_at', 'updated_at'];
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function bussinesses()
+    {
+        return $this->hasMany('App\Models\Bussiness');
+    }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function movements()
+    {
+        return $this->hasMany('App\Models\Movement');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function operations()
+    {
+        return $this->hasMany('App\Models\Operation');
+    }
 }

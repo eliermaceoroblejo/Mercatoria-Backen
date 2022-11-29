@@ -5,32 +5,44 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
+ * @property integer $id
  * @property integer $account_nature_id
  * @property integer $currency_id
- * @property integer $id
+ * @property integer $account_type
+ * @property integer $account_group_id
+ * @property integer $bussiness_id
+ * @property integer $number
  * @property string $name
  * @property string $created_at
  * @property string $updated_at
- * @property Balance[] $balances
+ * @property AccountGroup $accountGroup
  * @property AccountNature $accountNature
+ * @property AccountType $accountType
+ * @property Bussiness $bussiness
  * @property Currency $currency
+ * @property Balance[] $balances
  * @property OperationDetail[] $operationDetails
  */
 class Account extends Model
 {
     /**
-     * @var array
+     * The "type" of the auto-incrementing ID.
+     * 
+     * @var string
      */
-    protected $fillable = ['account_nature_id', 'currency_id', 'id', 'name', 'account_type', 'account_group_id'];
-
-    protected $hidden = ['created_at', 'updated_at'];
+    protected $keyType = 'integer';
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @var array
      */
-    public function balance()
+    protected $fillable = ['account_nature_id', 'currency_id', 'account_type', 'account_group_id', 'bussiness_id', 'number', 'name', 'created_at', 'updated_at'];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function accountGroup()
     {
-        return $this->hasOne('App\Models\Balance');
+        return $this->belongsTo('App\Models\AccountGroup');
     }
 
     /**
@@ -44,6 +56,22 @@ class Account extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
+    public function accountType()
+    {
+        return $this->belongsTo('App\Models\AccountType', 'account_type');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function bussiness()
+    {
+        return $this->belongsTo('App\Models\Bussiness');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function currency()
     {
         return $this->belongsTo('App\Models\Currency');
@@ -52,24 +80,16 @@ class Account extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
+    public function balances()
+    {
+        return $this->hasMany('App\Models\Balance');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function operationDetails()
     {
         return $this->hasMany('App\Models\OperationDetail');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function accountType()
-    {
-        return $this->hasOne(AccountType::class, 'id', 'account_type');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function accountGroup()
-    {
-        return $this->belongsTo(AccountGroup::class);
     }
 }

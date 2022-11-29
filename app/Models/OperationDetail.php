@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
+ * @property integer $id
  * @property integer $operation_id
  * @property integer $account_id
  * @property integer $module_id
@@ -19,11 +20,16 @@ use Illuminate\Database\Eloquent\Model;
 class OperationDetail extends Model
 {
     /**
+     * The "type" of the auto-incrementing ID.
+     * 
+     * @var string
+     */
+    protected $keyType = 'integer';
+
+    /**
      * @var array
      */
-    protected $fillable = ['operation_id', 'account_id', 'module_id', 'credit', 'debit'];
-
-    protected $hidden = ['created_at', 'updated_at'];
+    protected $fillable = ['operation_id', 'account_id', 'module_id', 'credit', 'debit', 'created_at', 'updated_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
+ * @property integer $id
  * @property integer $movement_id
  * @property integer $movement_type_id
  * @property integer $product_id
@@ -20,11 +21,16 @@ use Illuminate\Database\Eloquent\Model;
 class MovementDetail extends Model
 {
     /**
+     * The "type" of the auto-incrementing ID.
+     * 
+     * @var string
+     */
+    protected $keyType = 'integer';
+
+    /**
      * @var array
      */
-    protected $fillable = ['movement_id', 'movement_type_id', 'product_id', 'amount', 'price', 'total'];
-
-    protected $hidden = ['created_at', 'updated_at'];
+    protected $fillable = ['movement_id', 'movement_type_id', 'product_id', 'amount', 'price', 'total', 'created_at', 'updated_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

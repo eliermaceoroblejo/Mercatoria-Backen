@@ -14,12 +14,14 @@ return new class extends Migration
     public function up()
     {
         Schema::create('balances', function (Blueprint $table) {
-            // $table->id();
+            $table->id();
             $table->foreignId('account_id')->references('id')->on('accounts');
+            // $table->integer('account_id')->unsigned();
             $table->double('start_amount');
             $table->double('debit');
             $table->double('credit');
             $table->double('amount');
+            $table->foreignId('bussiness_id')->references('id')->on('bussinesses');
             $table->timestamps();
         });
     }
