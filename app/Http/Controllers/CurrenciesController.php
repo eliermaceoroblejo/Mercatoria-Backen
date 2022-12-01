@@ -17,13 +17,14 @@ class CurrenciesController extends Controller
     {
         return response()->json([
             'status' => true,
-            'data' => Currency::with('bussiness')->where('bussiness_id', $request->bussines_id)->orderBy('id', 'asc')->get()
+            'data' => Currency::where('bussiness_id', $request->bussiness_id)->orderBy('id', 'asc')->get()
         ]);
     }
 
     public function getCurrencyById(Request $request)
     {
-        $currency = Currency::where('id', $request->id)->first();
+        $currency = Currency::where('bussiness_id', $request->bussiness_id)
+            ->where('id', $request->id)->first();
         if (!$currency) {
             return response()->json([
                 'status' => true,
@@ -42,7 +43,8 @@ class CurrenciesController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'abbreviation' => 'required|string|max:5',
-            'rate' => 'required|numeric'
+            'rate' => 'required|numeric',
+            'bussiness_id' => 'required|numeric'
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -51,7 +53,9 @@ class CurrenciesController extends Controller
             ]);
         }
 
-        $currency = Currency::where('name', $request->name)->orWhere('abbreviation', $request->abbreviation)->first();
+        $currency = Currency::where('bussiness_id', $request->bussiness_id)
+            ->where('name', $request->name)
+            ->where('abbreviation', $request->abbreviation)->first();
         if ($currency) {
             return response()->json([
                 'status' => false,
@@ -59,10 +63,13 @@ class CurrenciesController extends Controller
                     ya existen registros con esos datos'
             ], 400);
         }
-        $currency = new Currency();
-        $currency->name = $request->name;
-        $currency->abbreviation = strtoupper($request->abbreviation);
-        $currency->rate = $request->rate;
+
+        $currency = Currency::create([
+            'name' => $request->name,
+            'abbreviation' => strtoupper($request->abbreviation),
+            'rate' => $request->rate,
+            'bussiness_id' => $request->bussiness_id
+        ]);
 
         $currency->save();
 
@@ -77,7 +84,8 @@ class CurrenciesController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'abbreviation' => 'required|string|max:5',
-            'rate' => 'required|numeric'
+            'rate' => 'required|numeric',
+            'bussiness_id' => 'required|numeric'
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -86,7 +94,8 @@ class CurrenciesController extends Controller
             ]);
         }
 
-        $currency = Currency::whereId($request->id)->first();
+        $currency = Currency::where('bussiness_id', $request->bussiness_id)
+            ->where('id', $request->id)->first();
         if (!$currency) {
             return response()->json([
                 'status' => false,
@@ -108,7 +117,8 @@ class CurrenciesController extends Controller
 
     public function deleteCurrency(Request $request)
     {
-        $currency = Currency::whereId($request->id)->first();
+        $currency = Currency::where('bussiness_id', $request->bussiness_id)
+            ->whereId($request->id)->first();
         if (!$currency) {
             return response()->json([
                 'status' => false,
@@ -116,7 +126,8 @@ class CurrenciesController extends Controller
             ]);
         }
 
-        $account = Account::where('currency_id', $request->id)->first();
+        $account = Account::where('bussiness_id', $request->bussiness_id)
+            ->where('currency_id', $request->id)->first();
 
         if ($account) {
             return response()->json([

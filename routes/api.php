@@ -5,8 +5,10 @@ use App\Http\Controllers\AccountGroupController;
 use App\Http\Controllers\AccountNatureController;
 use App\Http\Controllers\AccountTypesController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BussinessController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CurrenciesController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -34,22 +36,25 @@ Route::middleware('auth:sanctum')->group(function () {
     // Auth
     Route::post('v1/auth/logout', [AuthController::class, 'logout']);
 
+    // Users
+    Route::post('v1/users/setCurrentBussiness', [UserController::class, 'setCurrentBussiness']);
+
     // Currencies
     Route::post('v1/currencies/all', [CurrenciesController::class, 'getCurrencies']);
     Route::post('v1/currencies/byId', [CurrenciesController::class, 'getCurrencyById']);
-    Route::post('v1/currencies/', [CurrenciesController::class, 'addCurrency']);
-    Route::put('v1/currencies/', [CurrenciesController::class, 'editCurrency']);
-    Route::delete('v1/currencies/', [CurrenciesController::class, 'deleteCurrency']);
+    Route::post('v1/currencies', [CurrenciesController::class, 'addCurrency']);
+    Route::put('v1/currencies', [CurrenciesController::class, 'editCurrency']);
+    Route::delete('v1/currencies', [CurrenciesController::class, 'deleteCurrency']);
 
     //Accounts
     Route::post('v1/accounts/nature', [AccountNatureController::class, 'getAccountNature']);
     Route::post('v1/accounts/currencies', [CurrenciesController::class, 'getCurrencies']);
     Route::post('v1/accounts/types', [AccountTypesController::class, 'getAccountsTypes']);
-    Route::post('v1/accounts', [AccountController::class, 'getAccounts']);
-    Route::post('v1/accounts/add', [AccountController::class, 'addAccount']);
-    Route::post('v1/accounts/{id}', [AccountController::class, 'findAccount']);
-    Route::put('v1/accounts/{id}', [AccountController::class, 'editAccount']);
-    Route::delete('v1/accounts/{id}', [AccountController::class, 'deleteAccount']);
+    Route::post('v1/accounts/all', [AccountController::class, 'getAccounts']);
+    Route::post('v1/accounts', [AccountController::class, 'addAccount']);
+    Route::post('v1/accounts/byId', [AccountController::class, 'findAccount']);
+    Route::put('v1/accounts', [AccountController::class, 'editAccount']);
+    Route::delete('v1/accounts', [AccountController::class, 'deleteAccount']);
 
     // Accounts Group
     Route::post('v1/groups', [AccountGroupController::class, 'getGroups']);
@@ -60,10 +65,17 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Clients
     Route::post('v1/clients/all', [ClientController::class, 'getAll']);
-    Route::post('v1/clients/getByCode/{code}', [ClientController::class, 'getByCode']);
-    Route::post('v1/clients/getById/{id}', [ClientController::class, 'getById']);
-    Route::post('v1/clients/getByDescription/{description}', [ClientController::class, 'getByDescription']);
-    Route::post('v1/clients/add', [ClientController::class, 'addClient']);
-    Route::put('v1/clients/{id}', [ClientController::class, 'editClient']);
-    Route::delete('v1/clients/{id}', [ClientController::class, 'deleteClient']);
+    Route::post('v1/clients/getByCode', [ClientController::class, 'getByCode']);
+    Route::post('v1/clients/getById', [ClientController::class, 'getById']);
+    Route::post('v1/clients/getByDescription', [ClientController::class, 'getByDescription']);
+    Route::post('v1/clients', [ClientController::class, 'addClient']);
+    Route::put('v1/clients', [ClientController::class, 'editClient']);
+    Route::delete('v1/clients', [ClientController::class, 'deleteClient']);
+
+    // Bussiness
+    Route::post('v1/bussiness/all', [BussinessController::class, 'getAll']);
+    Route::post('v1/bussiness/getById', [BussinessController::class, 'getById']);
+    Route::post('v1/bussiness', [BussinessController::class, 'addBussiness']);
+    Route::delete('v1/bussiness', [BussinessController::class, 'deleteBussiness']);
+    Route::put('v1/bussiness', [BussinessController::class, 'editBussiness']);
 });

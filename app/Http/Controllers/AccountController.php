@@ -12,7 +12,8 @@ class AccountController extends Controller
 {
     public function getAccounts(Request $request)
     {
-        $accounts = Account::with(['currency', 'accountType', 'accountGroup', 'accountNature'])->orderBy('id', 'asc')->get();
+        $accounts = Account::with(['currency', 'accountType', 'accountGroup', 'accountNature'])
+            ->where('bussiness_id', $request->bussiness_id)->orderBy('id', 'asc')->get();
 
         foreach ($accounts as $account) {
             $account->currency_id = $account->currency->id;
@@ -23,6 +24,7 @@ class AccountController extends Controller
             unset($account->currency);
             unset($account->accountType);
             unset($account->accountGroup);
+            unset($account->accountNature);
         }
 
 
@@ -33,9 +35,10 @@ class AccountController extends Controller
         ],);
     }
 
-    public function getAccountByNature(Request $request, $nature)
+    public function getAccountByNature(Request $request)
     {
-        $accounts = Account::with('accountNature', $nature);
+        $accounts = Account::where('bussiness_id', $request->bussiness_id)
+            ->where('accountNature', $request->nature);
 
         return response()->json([
             'status' => true,
@@ -44,9 +47,10 @@ class AccountController extends Controller
         ]);
     }
 
-    public function getAccountByCurrency(Request $request, $currency)
+    public function getAccountByCurrency(Request $request)
     {
-        $accounts = Account::with('currency', $currency);
+        $accounts = Account::where('bussiness_id', $request->bussiness_id)
+            ->where('currency_id', $request->currency_id);
 
         return response()->json([
             'status' => true,
@@ -57,15 +61,14 @@ class AccountController extends Controller
 
     public function addAccount(Request $request)
     {
-
-
         $validator = Validator::make($request->all(), [
-            'id' => 'required|numeric|max:999',
+            'number' => 'required|numeric|max:999',
             'account_nature_id' => 'required|numeric',
             'currency_id' => 'required|numeric',
             'account_type' => 'required|numeric',
             'account_group_id' => 'required|numeric',
             'name' => 'required|string|max:255',
+            'bussiness_id' => 'required|numeric'
         ]);
 
         if ($validator->fails()) {
@@ -75,7 +78,8 @@ class AccountController extends Controller
             ], 400);
         }
 
-        $account = Account::whereId($request->id)->first();
+        $account = Account::where('bussiness_id', $request->bussiness_id)
+            ->where('id', $request->id)->first();
         if ($account) {
             return response()->json([
                 'status' => false,
@@ -84,12 +88,13 @@ class AccountController extends Controller
         }
 
         $account = Account::create([
-            'id' => $request->id,
+            'number' => $request->number,
             'name' => $request->name,
             'account_nature_id' => $request->account_nature_id,
             'currency_id' => $request->currency_id,
             'account_type' => $request->account_group_id,
-            'account_group_id' => $request->account_type
+            'account_group_id' => $request->account_type,
+            'bussiness_id' => $request->bussiness_id
         ]);
 
         $account->save();
@@ -101,7 +106,7 @@ class AccountController extends Controller
         ], 201);
     }
 
-    public function editAccount(Request $request, $id)
+    public function editAccount(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
@@ -118,7 +123,8 @@ class AccountController extends Controller
             ], 400);
         }
 
-        $account = Account::whereId($id)->first();
+        $account = Account::where('bussiness_id', $request->bussiness_id)
+            ->where('id', $request->id)->first();
         if (!$account) {
             return response()->json([
                 'status' => false,
@@ -127,8 +133,8 @@ class AccountController extends Controller
         }
 
         // Verificar si tiene saldo y se está cambiando la moneda o el tipo de cuenta
-        $balance = Balance::where('account_id', $id)->get();
-
+        $balance = Balance::where('bussiness_id', $request->bussiness_id)
+            ->where('account_id', $request->id)->get();
 
         if (($account->account_nature_id != $request->accont_nature_id ||
                 $account->currency_id != $request->currency_id) &&
@@ -155,9 +161,10 @@ class AccountController extends Controller
         ]);
     }
 
-    public function deleteAccount(Request $request, $id)
+    public function deleteAccount(Request $request)
     {
-        $account = Account::where('id', $id)->first();
+        $account = Account::where('bussiness_id', $request->bussiness_id)
+            ->where('id', $request->id)->first();
 
         if (!$account) {
             return response()->json([
@@ -166,7 +173,8 @@ class AccountController extends Controller
             ], 400);
         }
 
-        $balance = Balance::where('account_id', $id)->get();
+        $balance = Balance::where('bussiness_id', $request->bussiness_id)
+            ->where('account_id', $request->id)->get();
         if ($balance->count() > 0) {
             return response()->json([
                 'status' => false,
@@ -175,7 +183,7 @@ class AccountController extends Controller
         }
 
 
-        $accountOperations = OperationDetail::where('account_id', $id)->get();
+        $accountOperations = OperationDetail::where('account_id', $request->id)->get();
 
         if ($accountOperations->count() > 0) {
             return response()->json([
@@ -192,13 +200,13 @@ class AccountController extends Controller
         ]);
     }
 
-    public function findAccount(Request $request, $id)
+    public function findAccount(Request $request)
     {
-        $account = Account::where('id', $id)->first();
+        $account = Account::where('bussiness_id', $request->bussiness_id)->where('id', $request->id)->first();
         if (!$account) {
             return response()->json([
                 'status' => false,
-                'message' => 'La cuenta ' . $id . ' no existe'
+                'message' => 'La cuenta ' . $request->id . ' no existe'
             ]);
         }
 

@@ -36,7 +36,9 @@ class Bussiness extends Model
     /**
      * @var array
      */
-    protected $fillable = ['user_id', 'name', 'avatar', 'created_at', 'updated_at'];
+    protected $fillable = ['user_id', 'name', 'avatar'];
+
+    protected $hidden = ['created_at', 'updated_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

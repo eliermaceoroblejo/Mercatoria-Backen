@@ -34,10 +34,9 @@ class User extends Authenticatable
      */
     protected $keyType = 'integer';
 
-    /**
-     * @var array
-     */
-    protected $fillable = ['name', 'email', 'password', 'pin', 'pin_expired_in', 'email_verified_at', 'current_bussiness', 'remember_token', 'created_at', 'updated_at'];
+    protected $fillable = ['name', 'email', 'password', 'bussiness_id'];
+
+    protected $hidden = ['pin', 'pin_expired_in', 'password', 'email_verified_at', 'remember_token', 'created_at', 'updated_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
