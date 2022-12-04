@@ -58,10 +58,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Accounts Group
     Route::post('v1/groups', [AccountGroupController::class, 'getGroups']);
-    // Route::post('v1/groups/{id}', [AccountGroupController::class, 'getGroupById']);
-    // Route::post('v1/accounts/groups/add/', [AccountGroupController::class, 'addGroup']);
-    // Route::put('v1/groups/{id}', [AccountGroupController::class, 'editGroup']);
-    // Route::delete('v1/groups/{id}', [AccountGroupController::class, 'deleteGroup']);
 
     // Clients
     Route::post('v1/clients/all', [ClientController::class, 'getAll']);
