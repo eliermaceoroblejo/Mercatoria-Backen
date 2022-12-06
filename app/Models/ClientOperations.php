@@ -16,7 +16,7 @@ class ClientOperations extends Model
      */
     protected $keyType = 'integer';
 
-    protected $fillable = ['client_id', 'movement'];
+    protected $fillable = ['client_id', 'movement', 'reference'];
 
     protected $hidden = ['created_at', 'updated_at'];
 

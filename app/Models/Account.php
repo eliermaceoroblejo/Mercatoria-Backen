@@ -35,7 +35,7 @@ class Account extends Model
     /**
      * @var array
      */
-    protected $fillable = ['account_nature_id', 'currency_id', 'account_type', 'account_group_id', 'bussiness_id', 'number', 'name', 'created_at', 'updated_at'];
+    protected $fillable = ['account_nature_id', 'currency_id', 'account_type', 'account_group_id', 'bussiness_id', 'number', 'name', 'locked', 'created_at', 'updated_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

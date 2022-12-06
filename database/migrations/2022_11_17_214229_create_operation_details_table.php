@@ -17,8 +17,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('operation_id')->references('id')->on('operations');
             $table->foreignId('account_id')->references('id')->on('accounts');
-            // $table->integer('account_id')->unsigned();
             $table->foreignId('module_id')->references('id')->on('modules');
+            $table->string('reference');
             $table->double('credit');
             $table->double('debit');
             $table->timestamps();

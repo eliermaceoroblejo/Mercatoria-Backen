@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreignId('account_type')->references('id')->on('account_types');
             $table->foreignId('account_group_id')->references('id')->on('account_groups');
             $table->foreignId('bussiness_id')->references('id')->on('bussinesses');
+            $table->boolean('locked')->default(false);
             $table->string('name');
             $table->timestamps();
         });

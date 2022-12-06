@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('client_id')->references('id')->on('clients');
             $table->float('movement');
+            $table->string('reference');
             $table->timestamps();
         });
     }

@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('operations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('modules_id')->references('id')->on('modules');
+            $table->foreignId('module_id')->references('id')->on('modules');
             $table->foreignId('user_id')->references('id')->on('users');
             $table->foreignId('bussiness_id')->references('id')->on('bussinesses');
             $table->double('total_debit')->default(0);

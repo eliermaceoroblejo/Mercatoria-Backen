@@ -29,7 +29,7 @@ class OperationDetail extends Model
     /**
      * @var array
      */
-    protected $fillable = ['operation_id', 'account_id', 'module_id', 'credit', 'debit', 'created_at', 'updated_at'];
+    protected $fillable = ['operation_id', 'account_id', 'module_id', 'credit', 'debit', 'reference', 'created_at', 'updated_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

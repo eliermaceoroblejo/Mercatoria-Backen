@@ -55,6 +55,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('v1/accounts/byId', [AccountController::class, 'findAccount']);
     Route::put('v1/accounts', [AccountController::class, 'editAccount']);
     Route::delete('v1/accounts', [AccountController::class, 'deleteAccount']);
+    Route::delete('v1/accounts/lock', [AccountController::class, 'lockAccount']);
 
     // Accounts Group
     Route::post('v1/groups', [AccountGroupController::class, 'getGroups']);
