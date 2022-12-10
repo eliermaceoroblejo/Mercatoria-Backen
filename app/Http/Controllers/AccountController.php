@@ -14,7 +14,8 @@ class AccountController extends Controller
     public function getAccounts(Request $request)
     {
         $accounts = Account::with(['currency', 'accountType', 'accountGroup', 'accountNature'])
-            ->where('bussiness_id', $request->bussiness_id)->orderBy('id', 'asc')->get();
+            ->where('bussiness_id', $request->bussiness_id)
+            ->orderBy('number')->get();
 
         foreach ($accounts as $account) {
             $account->currency_id = $account->currency->id;
@@ -82,7 +83,7 @@ class AccountController extends Controller
             }
 
             $account = Account::where('bussiness_id', $request->bussiness_id)
-                ->where('id', $request->id)->first();
+                ->where('number', $request->number)->first();
             if ($account) {
                 DB::rollBack();
                 return response()->json([
@@ -136,7 +137,7 @@ class AccountController extends Controller
             }
 
             $account = Account::where('bussiness_id', $request->bussiness_id)
-                ->where('id', $request->id)->first();
+                ->where('number', $request->number)->first();
             if (!$account) {
                 DB::rollBack();
                 return response()->json([
@@ -229,9 +230,26 @@ class AccountController extends Controller
         }
     }
 
-    public function findAccount(Request $request)
+    public function findAccountById(Request $request)
     {
         $account = Account::where('bussiness_id', $request->bussiness_id)->where('id', $request->id)->first();
+        if (!$account) {
+            return response()->json([
+                'status' => false,
+                'message' => 'La cuenta ' . $request->id . ' no existe'
+            ]);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'OK',
+            'data' => $account
+        ]);
+    }
+
+    public function findAccountByNumber(Request $request)
+    {
+        $account = Account::where('bussiness_id', $request->bussiness_id)->where('number', $request->number)->first();
         if (!$account) {
             return response()->json([
                 'status' => false,

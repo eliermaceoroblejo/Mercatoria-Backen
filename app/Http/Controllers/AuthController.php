@@ -28,7 +28,7 @@ class AuthController extends Controller
 
         $user = User::create([
             'name' => $request->name,
-            'email' => $request->email,
+            'email' => strtolower($request->email),
             'password' => Hash::make($request->password)
         ]);
 
@@ -43,7 +43,7 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $user = User::whereEmail($request->email)->first();
+        $user = User::whereEmail(strtolower($request->email))->first();
         if (!$user) {
             return response()->json([
                 'status' => false,
@@ -51,7 +51,7 @@ class AuthController extends Controller
             ]);
         }
 
-        if ($user->current_bussiness == null) {
+        if (!$user->current_bussiness) {
             $user->current_bussiness = 0;
         }
 

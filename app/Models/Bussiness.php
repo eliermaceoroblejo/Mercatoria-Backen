@@ -135,4 +135,14 @@ class Bussiness extends Model
     {
         return $this->hasMany('App\Models\ModuleBussiness');
     }
+
+    /**
+     * Get all of the operationDetails for the Bussiness
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function clientOperationDetails()
+    {
+        return $this->hasMany(ClientOperations::class);
+    }
 }

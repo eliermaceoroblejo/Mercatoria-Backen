@@ -18,9 +18,10 @@ return new class extends Migration
             $table->foreignId('operation_id')->references('id')->on('operations');
             $table->foreignId('account_id')->references('id')->on('accounts');
             $table->foreignId('module_id')->references('id')->on('modules');
-            $table->string('reference');
-            $table->double('credit');
-            $table->double('debit');
+            $table->string('reference')->nullable();
+            $table->string('client')->nullable();
+            $table->double('debit')->default(0);
+            $table->double('credit')->default(0);
             $table->timestamps();
         });
     }

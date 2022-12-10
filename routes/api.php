@@ -5,10 +5,14 @@ use App\Http\Controllers\AccountGroupController;
 use App\Http\Controllers\AccountNatureController;
 use App\Http\Controllers\AccountTypesController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BalanceController;
 use App\Http\Controllers\BussinessController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CurrenciesController;
+use App\Http\Controllers\OperationController;
+use App\Http\Controllers\OperationDetailsController;
 use App\Http\Controllers\UserController;
+use App\Models\ClientOperations;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -52,7 +56,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('v1/accounts/types', [AccountTypesController::class, 'getAccountsTypes']);
     Route::post('v1/accounts/all', [AccountController::class, 'getAccounts']);
     Route::post('v1/accounts', [AccountController::class, 'addAccount']);
-    Route::post('v1/accounts/byId', [AccountController::class, 'findAccount']);
+    Route::post('v1/accounts/byId', [AccountController::class, 'findAccountById']);
+    Route::post('v1/accounts/byNumber', [AccountController::class, 'findAccountByNumber']);
     Route::put('v1/accounts', [AccountController::class, 'editAccount']);
     Route::delete('v1/accounts', [AccountController::class, 'deleteAccount']);
     Route::delete('v1/accounts/lock', [AccountController::class, 'lockAccount']);
@@ -75,4 +80,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('v1/bussiness', [BussinessController::class, 'addBussiness']);
     Route::delete('v1/bussiness', [BussinessController::class, 'deleteBussiness']);
     Route::put('v1/bussiness', [BussinessController::class, 'editBussiness']);
+
+    // Operations 
+    Route::post('v1/operations/all', [OperationController::class, 'getAll']);
+    Route::post('v1/operations/byId', [OperationController::class, 'getById']);
+    Route::post('v1/operations', [OperationController::class, 'addOperation']);
+
+    // Client Operations
+    Route::post('v1/clientoperations/all', [ClientOperations::class, 'getAll']);
+
+    // Balance
+    Route::post('v1/balance', [BalanceController::class, 'getBalance']);
 });

@@ -92,4 +92,14 @@ class Account extends Model
     {
         return $this->hasMany('App\Models\OperationDetail');
     }
+
+    /**
+     * Get all of the clientOperation for the Account
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function clientOperation()
+    {
+        return $this->hasMany(ClientOperations::class);
+    }
 }

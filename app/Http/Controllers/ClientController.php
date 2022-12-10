@@ -46,7 +46,7 @@ class ClientController extends Controller
     public function getByCode(Request $request)
     {
         $client = Client::where('bussiness_id', $request->bussiness_id)
-            ->where('code', 'like', '%' . $request->code . '%')->first();
+            ->where('code', $request->code)->first();
         if (!$client) {
             return response()->json([
                 'status' => false,
@@ -55,7 +55,7 @@ class ClientController extends Controller
         }
 
         $clientMovements = Movement::where('bussiness_id', $request->bussiness_id)
-            ->where('client_id', $request->code)->get();
+            ->where('client_id', $client->id)->get();
 
         $client->editable = $clientMovements->count() == 0;
 
@@ -68,7 +68,8 @@ class ClientController extends Controller
 
     public function getByDescription(Request $request)
     {
-        $client = Client::where('bussiness_id', $request->bussiness_id)->where('description', 'like', '$' . $request->description . '%')->first();
+        $client = Client::where('bussiness_id', $request->bussiness_id)
+            ->where('description', 'like', '$' . $request->description . '%')->first();
         if (!$client) {
             return response()->json([
                 'status' => false,

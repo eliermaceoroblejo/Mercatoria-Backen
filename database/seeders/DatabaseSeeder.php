@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             AccountTypesSeeder::class,
             AccountNatureSeeder::class,
-            // CurrenciesSeeder::class,
+            ModulesSeeder::class,
             UserSeeder::class,
             AccountGroupsSeeder::class,
             MovementTypesSeeder::class

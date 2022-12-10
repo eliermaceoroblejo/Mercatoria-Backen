@@ -29,7 +29,7 @@ class Balance extends Model
     /**
      * @var array
      */
-    protected $fillable = ['account_id', 'bussiness_id', 'start_amount', 'debit', 'credit', 'amount', 'created_at', 'updated_at'];
+    protected $fillable = ['account_id', 'bussiness_id', 'start_amount', 'debit', 'credit', 'amount', 'bussiness_id', 'created_at', 'updated_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

@@ -15,7 +15,9 @@ return new class extends Migration
     {
         Schema::create('client_operations', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('bussiness_id')->references('id')->on('bussinesses');
             $table->foreignId('client_id')->references('id')->on('clients');
+            $table->foreignId('account_id')->references('id')->on('accounts');
             $table->float('movement');
             $table->string('reference');
             $table->timestamps();

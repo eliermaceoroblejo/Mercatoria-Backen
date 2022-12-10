@@ -16,7 +16,7 @@ class ClientOperations extends Model
      */
     protected $keyType = 'integer';
 
-    protected $fillable = ['client_id', 'movement', 'reference'];
+    protected $fillable = ['client_id', 'movement', 'reference', 'account_id', 'bussiness_id'];
 
     protected $hidden = ['created_at', 'updated_at'];
 
@@ -28,5 +28,25 @@ class ClientOperations extends Model
     public function client()
     {
         return $this->belongsTo(Client::class);
+    }
+
+    /**
+     * Get the accounts that owns the ClientOperations
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function accounts()
+    {
+        return $this->belongsTo(Account::class);
+    }
+
+    /**
+     * Get the bussiness that owns the ClientOperations
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function bussiness()
+    {
+        return $this->belongsTo(Bussiness::class);
     }
 }

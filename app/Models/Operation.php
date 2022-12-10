@@ -30,7 +30,9 @@ class Operation extends Model
     /**
      * @var array
      */
-    protected $fillable = ['modules_id', 'user_id', 'bussiness_id', 'total_debit', 'total_credit', 'created_at', 'updated_at'];
+    protected $fillable = ['module_id', 'user_id', 'bussiness_id', 'total_debit', 'total_credit'];
+
+    protected $hidden = ['updated_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -45,7 +47,7 @@ class Operation extends Model
      */
     public function module()
     {
-        return $this->belongsTo('App\Models\Module', 'modules_id');
+        return $this->belongsTo(Module::class);
     }
 
     /**
