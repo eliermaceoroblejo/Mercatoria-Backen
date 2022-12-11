@@ -29,7 +29,7 @@ class OperationDetailsController extends Controller
         ]);
     }
 
-    public static function addOperationDetail($bussiness_id, $module_id, $detail, $operation_id)
+    public static function addOperationDetail($bussiness_id, $module_id, $detail, $operation_id, $revert)
     {
         OperationDetail::create([
             'operation_id' => $operation_id,
@@ -42,7 +42,7 @@ class OperationDetailsController extends Controller
         ]);
         BalanceController::updatetBalance($bussiness_id, $detail);
         if ($detail['client']) {
-            ClientOperationsController::addClientOperation($bussiness_id, $detail);
+            ClientOperationsController::addClientOperation($bussiness_id, $detail, $revert);
         }
     }
 

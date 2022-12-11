@@ -72,7 +72,7 @@ class ClientOperationsController extends Controller
         ]);
     }
 
-    public static function addClientOperation($bussiness_id, $details)
+    public static function addClientOperation($bussiness_id, $details, $revert)
     {
         $account = Account::where('bussiness_id', $bussiness_id)
             ->where('id', $details['account_id'])->first();
@@ -81,15 +81,15 @@ class ClientOperationsController extends Controller
             throw new Exception('No existe la cuenta ' . $details['account'] . 'en el catálogo');
         }
 
-        // $clientOperationReferenceByAccount = ClientOperations::where('bussiness_id', $bussiness_id)
-        //     ->where('account_id', $details['account_id'])
-        //     ->where('client_id', $details['client_id'])
-        //     ->where('reference', $details['reference'])->first();
+        $clientOperationReferenceByAccount = ClientOperations::where('bussiness_id', $bussiness_id)
+            ->where('account_id', $details['account_id'])
+            ->where('client_id', $details['client_id'])
+            ->where('reference', $details['reference'])->first();
 
-        // if ($clientOperationReferenceByAccount) {
-        //     // if ($account->account_group_id == 2 && $details['client_id'] == $clientOperationReferenceByAccount->client_id)
-        //     throw new Exception('Ya existe una operación con esa referencia');
-        // }
+        if ($clientOperationReferenceByAccount && !$revert) {
+            // if ($account->account_group_id == 2 && $details['client_id'] == $clientOperationReferenceByAccount->client_id)
+            throw new Exception('Ya existe una operación con esa referencia');
+        }
 
         $movement = 0;
         if ($details['operationNature'] == 1) {

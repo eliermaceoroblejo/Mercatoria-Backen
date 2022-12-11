@@ -89,7 +89,8 @@ class OperationController extends Controller
                     $request->bussiness_id,
                     $request->module_id,
                     $detail,
-                    $operation->id
+                    $operation->id,
+                    $request->revert
                 );
             }
 
