@@ -17,12 +17,6 @@ class BalanceController extends Controller
             ->join('accounts', 'balances.account_id', '=', 'accounts.id')
             ->orderBy('accounts.number')
             ->where('balances.bussiness_id', $request->bussiness_id)->get();
-        // foreach ($balance as $accountBalance) {
-        //     $accountBalance->account_number = $accountBalance->account->number;
-        //     $accountBalance->account_nane = $accountBalance->account->name;
-        //     $accountBalance->account_nature_id = $accountBalance->account->account_nature_id;
-        //     unset($accountBalance->account);
-        // }
         return response()->json([
             'status' => true,
             'message' => 'OK',

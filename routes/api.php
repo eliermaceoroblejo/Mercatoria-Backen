@@ -85,6 +85,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('v1/operations/all', [OperationController::class, 'getAll']);
     Route::post('v1/operations/byId', [OperationController::class, 'getById']);
     Route::post('v1/operations', [OperationController::class, 'addOperation']);
+    Route::post('v1/operations/revert', [OperationController::class, 'revertOperation']);
+    Route::post('v1/operations/detail', [OperationDetailsController::class, 'getOperationDetail1']);
 
     // Client Operations
     Route::post('v1/clientoperations/all', [ClientOperations::class, 'getAll']);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Account;
 use App\Models\Balance;
 use App\Models\OperationDetail;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -285,6 +286,18 @@ class AccountController extends Controller
             ]);
         } catch (\Throwable $th) {
             DB::rollBack();
+        }
+    }
+
+    public static function verifyLockedAccount($bussiness_id, $id)
+    {
+        $account = Account::where('bussiness_id', $bussiness_id)
+            ->where('id', $id)->first();
+        if (!$account) {
+            throw new Exception("No existe la cuenta con id: " . $id);
+        }
+        if ($account->locked) {
+            throw new Exception("La cuenta " . $account->number . " está bloqueada, no se puede revertir la operación");
         }
     }
 }

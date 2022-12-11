@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Client;
 use App\Models\Operation;
 use App\Models\OperationDetail;
 use Exception;
@@ -106,5 +107,43 @@ class OperationController extends Controller
                 'message' => $th->getMessage()
             ]);
         }
+    }
+
+    public function revertOperation(Request $request)
+    {
+        $operation = Operation::where('bussiness_id', $request->bussiness_id)
+            ->where('id', $request->id)->first();
+        if (!$operation) {
+            return response()->json([
+                'status' => false,
+                'message' => 'No existe la operación con id: ' . $request->id
+            ]);
+        }
+        $operationDetail = OperationDetailsController::getOperationDetail($operation->id);
+
+        foreach ($operationDetail as $detail) {
+            if ($detail->client) {
+                $client = Client::where('bussiness_id', $request->bussiness_id)
+                    ->where('code', $detail->client)->first();
+                if (!$client) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'El cliente ' . $detail->client . ' no existe'
+                    ]);
+                }
+                $detail->client_id = $client->id;
+            }
+            $detail->account_number = $detail->account->number;
+            $temp = floatval($detail->debit);
+            $detail->debit = floatval($detail->credit);
+            $detail->credit = floatval($temp);
+            unset($detail->account);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'OK',
+            'data' => $operationDetail
+        ]);
     }
 }
