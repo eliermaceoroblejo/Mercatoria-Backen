@@ -53,22 +53,14 @@ class BussinessController extends Controller
             ]);
         }
 
-        // if ($request->hasFile("avatar")) {
-        //     $avatar = $request->file('avatar');
-        //     $avatar_name = Str::slug($request->name) . "." . $avatar->guessExtension();
-        //     $avatar_route = public_path("avatar/bussiness/");
-        //     copy($avatar->getRealPath(), $avatar_route . $avatar_name);
-        //     $avatar_image = $avatar_name;
-        // }
-
-        // $bussiness = Bussiness::where('bussiness_id', $request->bussiness_id)
-        //     ->where(strtolower('name'), strtolower($request->name));
-        // if ($bussiness) {
-        //     return response()->json([
-        //         'status' => false,
-        //         'message' => 'Ya existe un negocio con ese nombre'
-        //     ]);
-        // }
+        $slug = Str::slug($request->name);
+        $bussiness = Bussiness::where('slug', $slug)->first();
+        if ($bussiness) {
+            return response()->json([
+                'status' => false,
+                'message' => 'El negocio que desea agregar ya existe'
+            ]);
+        }
 
         $bussiness = Bussiness::create([
             'name' => $request->name,
@@ -77,7 +69,6 @@ class BussinessController extends Controller
             // 'avatar' => $avatar_image
         ]);
 
-        $bussiness->save();
         return response()->json([
             'status' => true,
             'message' => 'Negocio creado',
@@ -97,6 +88,16 @@ class BussinessController extends Controller
                 'message' => $validator->errors()
             ]);
         }
+
+        $slug = Str::slug($request->name);
+        $bussiness = Bussiness::where('slug', $slug)->first();
+        if ($bussiness) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Ya existe un negocio con este nombre'
+            ]);
+        }
+        
         $bussiness = Bussiness::where('id', $request->id)->where('user_id', $request->user_id)->first();
         if (!$bussiness) {
             return response()->json([
@@ -104,10 +105,11 @@ class BussinessController extends Controller
                 'message' => 'El negocio que intenta modificar no existe'
             ]);
         }
+
         $bussiness->name = $request->name;
         $bussiness->avatar = $request->avatar;
-
         $bussiness->update();
+
         return response()->json([
             'status' => true,
             'message' => 'Negocio actualizado',

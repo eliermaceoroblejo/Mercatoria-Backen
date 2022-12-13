@@ -26,7 +26,9 @@ class Client extends Model
     /**
      * @var array
      */
-    protected $fillable = ['bussiness_id', 'code', 'name', 'created_at', 'updated_at'];
+    protected $fillable = ['bussiness_id', 'code', 'name', 'slug'];
+
+    protected $hidden = ['created_at', 'updated_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

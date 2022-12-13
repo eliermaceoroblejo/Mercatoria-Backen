@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('stores', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('slug');
             $table->foreignId('bussiness_id')->references('id')->on('bussinesses');
             $table->timestamps();
         });

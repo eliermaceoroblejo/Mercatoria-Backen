@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('code')->unique();
             $table->string('name');
+            $table->string('slug');
             $table->foreignId('bussiness_id')->references('id')->on('bussinesses');
             $table->timestamps();
         });

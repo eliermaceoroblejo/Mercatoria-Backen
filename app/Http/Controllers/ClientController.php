@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Str;
 use App\Models\Client;
 use App\Models\Movement;
 use App\Models\OperationDetail;
@@ -99,21 +100,31 @@ class ClientController extends Controller
             ], 400);
         }
 
-        $client = Client::where('bussiness_id', $request->bussiness_id)->where('code', $request->code)->first();
+        $slug = Str::slug($request->name);
+        $client = Client::where('user_id', $request->user_id)
+            ->where('slug', $slug)->first();
         if ($client) {
             return response()->json([
                 'status' => false,
-                'message' => 'Ya existe un cliente/proveedor con el código ' . $request->code
+                'message' => 'Ya existe un cliente/proveedor con el ese nombre '
+            ], 400);
+        }
+
+        $client = Client::where('user_id', $request->user_id)
+            ->where('code', $request->code)->first();
+        if ($client) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Ya existe un cliente/proveedor con el ese código '
             ], 400);
         }
 
         $client = Client::create([
             'code' => $request->code,
             'name' => $request->name,
-            'bussiness_id' => $request->bussiness_id
+            'bussiness_id' => $request->bussiness_id,
+            'slug' => $slug
         ]);
-
-        $client->save();
 
         return response()->json([
             'status' => true,
@@ -137,13 +148,26 @@ class ClientController extends Controller
             ], 400);
         }
 
-        $client = Client::where('bussiness_id', $request->bussiness_id)->where('id', $request->id)->first();
+        $slug = Str::slug($request->name);
+        $client = Client::where('bussiness_id', $request->bussiness_id)
+            ->where('slug', $slug)->first();
+        if ($client) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Ya existe un cliente/proveedor con este nombre '
+            ], 400);
+        }
+
+        $client = Client::where('bussiness_id', $request->bussiness_id)
+            ->where('id', $request->id)->first();
         if (!$client) {
             return response()->json([
                 'status' => false,
                 'message' => 'El cliente que intenta actualizar no existe'
             ], 400);
         }
+
+        
 
         $client->code = $request->code;
         $client->name = $request->name;

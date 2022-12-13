@@ -36,7 +36,7 @@ class Bussiness extends Model
     /**
      * @var array
      */
-    protected $fillable = ['user_id', 'name', 'avatar'];
+    protected $fillable = ['user_id', 'name', 'slug', 'avatar'];
 
     protected $hidden = ['created_at', 'updated_at'];
 
