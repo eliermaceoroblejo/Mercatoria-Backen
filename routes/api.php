@@ -8,11 +8,11 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BalanceController;
 use App\Http\Controllers\BussinessController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\ClientOperationsController;
 use App\Http\Controllers\CurrenciesController;
 use App\Http\Controllers\OperationController;
 use App\Http\Controllers\OperationDetailsController;
 use App\Http\Controllers\UserController;
-use App\Models\ClientOperations;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -61,6 +61,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('v1/accounts', [AccountController::class, 'editAccount']);
     Route::delete('v1/accounts', [AccountController::class, 'deleteAccount']);
     Route::delete('v1/accounts/lock', [AccountController::class, 'lockAccount']);
+    Route::post('v1/accounts/clientOperations', [AccountController::class, 'getAllAccountClientOperations']);
 
     // Accounts Group
     Route::post('v1/groups', [AccountGroupController::class, 'getGroups']);
@@ -89,7 +90,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('v1/operations/detail', [OperationDetailsController::class, 'getOperationDetail1']);
 
     // Client Operations
-    Route::post('v1/clientoperations/all', [ClientOperations::class, 'getAll']);
+    Route::post('v1/clientoperations/all', [ClientOperationsController::class, 'getAllClientOperations']);
 
     // Balance
     Route::post('v1/balance', [BalanceController::class, 'getBalance']);

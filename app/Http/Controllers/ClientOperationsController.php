@@ -6,27 +6,24 @@ use App\Models\Account;
 use App\Models\ClientOperations;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ClientOperationsController extends Controller
 {
-    public function getAll(Request $request)
+    public function getAllClientOperations(Request $request)
     {
-        $clientBalance = ClientOperations::with(['accounts', 'clients'])
-            ->where('bussiness_id', $request->bussiness_id)->get();
-
-        foreach ($clientBalance as $client) {
-            $client->account_id = $client->accounts->id;
-            $client->account_name = $client->accounts->name;
-            $client->client_id = $client->clients->id;
-            $client->client_name = $client->clients->name;
-            unset($client->accounts);
-            unset($client->clients);
-        }
+        $arr = DB::select('SELECT c.code as clientCode, c.name as clientName, a.number accountNumber, a.name as accountName, SUM(co.movement) AS Movement
+            FROM clients AS C
+            INNER JOIN client_operations co ON c.id = co.client_id
+            INNER JOIN accounts a ON a.id = co.account_id
+            WHERE co.bussiness_id = ?
+            GROUP BY c.code, c.name, a.number, a.name
+            ORDER BY c.code, a.number', [$request->bussiness_id]);
 
         return response()->json([
             'status' => true,
             'message' => 'OK',
-            'data' => $clientBalance
+            'data' => $arr
         ]);
     }
 

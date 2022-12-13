@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Account;
 use App\Models\Balance;
+use App\Models\Client;
+use App\Models\ClientOperations;
 use App\Models\OperationDetail;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use PhpParser\Node\Expr\Cast\Object_;
 
 class AccountController extends Controller
 {
@@ -299,5 +302,23 @@ class AccountController extends Controller
         if ($account->locked) {
             throw new Exception("La cuenta " . $account->number . " está bloqueada, no se puede revertir la operación");
         }
+    }
+
+    public function getAllAccountClientOperations(Request $request)
+    {
+        $arr = DB::select('SELECT a.number  as accountNumber, a.name as accountName, c.code as clientCode, 
+            c.name as clientName, SUM(movement) AS Importe 
+            FROM client_operations AS co
+            INNER JOIN accounts AS a ON a.id = co.account_id
+            INNER JOIN clients AS C ON c.id = co.client_id
+            WHERE co.bussiness_id = ?
+            GROUP BY co.bussiness_id, c.code, c.name, a.number, a.name
+            ORDER BY a.number', [$request->bussiness_id]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'OK',
+            'data' => $arr
+        ]);
     }
 }

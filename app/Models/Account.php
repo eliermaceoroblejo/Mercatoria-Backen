@@ -102,4 +102,14 @@ class Account extends Model
     {
         return $this->hasMany(ClientOperations::class);
     }
+
+    /**
+     * Get all of the clientOperations for the Account
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function clientOperations()
+    {
+        return $this->hasManyThrough(Client::class, ClientOperations::class, 'account_id', 'id', 'id');
+    }
 }
