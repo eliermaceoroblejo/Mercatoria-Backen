@@ -65,7 +65,8 @@ class BussinessController extends Controller
         $bussiness = Bussiness::create([
             'name' => $request->name,
             'user_id' => $request->user_id,
-            'avatar' => null
+            'avatar' => null,
+            'slug' => $slug
             // 'avatar' => $avatar_image
         ]);
 
@@ -108,6 +109,7 @@ class BussinessController extends Controller
 
         $bussiness->name = $request->name;
         $bussiness->avatar = $request->avatar;
+        $bussiness->slug = $slug;
         $bussiness->update();
 
         return response()->json([
