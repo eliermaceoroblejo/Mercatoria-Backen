@@ -27,7 +27,9 @@ class Unit extends Model
     /**
      * @var array
      */
-    protected $fillable = ['bussiness_id', 'name', 'abbreviation', 'unitary', 'created_at', 'updated_at'];
+    protected $fillable = ['bussiness_id', 'name', 'abbreviation', 'unitary', 'slug'];
+
+    protected $hidden = ['created_at', 'updated_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

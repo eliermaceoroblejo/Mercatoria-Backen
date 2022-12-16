@@ -26,9 +26,9 @@ class Store extends Model
     /**
      * @var array
      */
-    protected $fillable = ['bussiness_id', 'name'];
+    protected $fillable = ['bussiness_id', 'name', 'slug'];
 
-    protected $hidden = ['created_at', 'updated_at'];
+    protected $hidden = ['slug', 'created_at', 'updated_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

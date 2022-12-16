@@ -171,6 +171,7 @@ class ClientController extends Controller
 
         $client->code = $request->code;
         $client->name = $request->name;
+        $client->slug = $slug;
         $client->update();
 
         return response()->json([

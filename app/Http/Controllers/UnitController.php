@@ -2,49 +2,50 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Str;
-use App\Models\Store;
-use App\Models\StoreProduct;
+use App\Models\Unit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
-class StoreController extends Controller
+class UnitController extends Controller
 {
     public function getAll(Request $request)
     {
-        $stores = Store::where('bussiness_id', $request->bussiness_id)->get();
+        $units = Unit::where('bussiness_id', $request->bussiness_id)->get();
 
         return response()->json([
             'status' => true,
             'message' => 'OK',
-            'data' => $stores
+            'data' => $units
         ]);
     }
 
     public function getById(Request $request)
     {
-        $store = Store::where('bussiness_id', $request->bussiness_id)
+        $unit = Unit::where('bussiness_id', $request->bussiness_id)
             ->where('id', $request->id)->first();
 
-        if (!$store) {
+        if (!$unit) {
             return response()->json([
                 'status' => false,
-                'message' => 'El almacén con id: ' .  $request->id . ' no existe'
+                'message' => 'La unidad de medida con idL ' . $request->id . ' no existe'
             ]);
         }
 
         return response()->json([
             'status' => true,
             'message' => 'OK',
-            'data' => $store
+            'data' => $unit
         ]);
     }
 
-    public function addStore(Request $request)
+    public function addUnit(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
             'bussiness_id' => 'required|numeric',
+            'name' => 'required|string|max:255',
+            'abbreviation' => 'required|string|max:255',
+            'unitary' => 'required|boolean'
         ]);
 
         if ($validator->fails()) {
@@ -55,32 +56,39 @@ class StoreController extends Controller
         }
 
         $slug = Str::slug($request->name);
-        $store = Store::where('bussiness_id', $request->bussiness_id)
+
+        $unit = Unit::where('bussiness_id', $request->bussiness_id)
             ->where('slug', $slug)->first();
-        if ($store) {
+
+        if ($unit) {
             return response()->json([
                 'status' => false,
-                'message' => 'Ya existe un almacén con ese nombre'
+                'message' => 'Ya existe una unidad de medida con ese nombre'
             ]);
         }
-        $store = Store::create([
+
+        $unit = Unit::create([
             'name' => $request->name,
+            'abbreviation' => $request->abbreviation,
+            'unitary' => $request->unitary,
             'bussiness_id' => $request->bussiness_id,
             'slug' => $slug
         ]);
 
         return response()->json([
             'status' => true,
-            'message' => 'Almacén creado',
-            'data' => $store
+            'message' => 'Unidad de medida creada',
+            'data' => $unit
         ]);
     }
 
-    public function editStore(Request $request)
+    public function editUnit(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
             'bussiness_id' => 'required|numeric',
+            'name' => 'required|string|max:255',
+            'abbreviation' => 'required|string|max:255',
+            'unitary' => 'required|boolean'
         ]);
 
         if ($validator->fails()) {
@@ -89,62 +97,62 @@ class StoreController extends Controller
                 'message' => $validator->errors()
             ]);
         }
-        
+
         $slug = Str::slug($request->name);
-        $store = Store::where('bussiness_id', $request->bussiness_id)
+
+        $unit = Unit::where('bussiness_id', $request->bussiness_id)
             ->where('slug', $slug)
             ->whereNot('id', $request->id)->first();
-        if ($store) {
+
+        if ($unit) {
             return response()->json([
                 'status' => false,
-                'message' => 'Ya existe un almacén con ese nombre'
+                'message' => 'Ya existe una unidad de medida el ese nombre'
             ]);
         }
 
-        $store = Store::where('bussiness_id', $request->bussiness_id)
+        $unit = Unit::where('bussiness_id', $request->bussiness_id)
             ->where('id', $request->id)->first();
-        if (!$store) {
+
+        if (!$unit) {
             return response()->json([
                 'status' => false,
-                'message' => 'El almacén con id: ' . $request->id . ' no existe'
+                'message' => 'No existe una unidad de medida el id: ' . $request->id
             ]);
         }
-        
-        $store->name = $request->name;
-        $store->slug = $slug;
-        $store->update();
+
+        $unit = Unit::create([
+            'name' => $request->name,
+            'abbreviation' => $request->abbreviation,
+            'unitary' => $request->unitary,
+            'bussiness_id' => $request->bussiness_id,
+            'slug' => $slug
+        ]);
 
         return response()->json([
             'status' => true,
-            'message' => 'Almacén editado',
-            'data' => $store
+            'message' => 'Unidad de medida actualizada',
+            'data' => $unit
         ]);
     }
 
-    public function deleteStore(Request $request)
+    public function deleteUnit(Request $request)
     {
-        $store = Store::where('bussiness_id', $request->bussiness_id)
-            ->where('id', $request->id)->first();
-        if (!$store) {
+        $unit = Unit::where('bussiness_id', $request->bussiness_id)
+            ->where('id', $request->id)->fist();
+        
+        if(!$unit) {
             return response()->json([
                 'status' => false,
-                'message' => 'El almacén con id: ' . $request->id . ' no existe'
+                'message' => 'No existe la unidad de medida con id: ' . $request->id
             ]);
         }
 
-        $storeProducts = StoreProduct::where('bussiness_id', $request->bussiness_id)
-            ->where('store_id', $request->id)->get();
-        if ($storeProducts->count() > 0) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Existen productos asociados al amnacén ' . $request->id
-            ]);
-        }
-        $store->delete();
+        $unit->delete();
 
         return response()->json([
             'status' => true,
-            'message' => 'Almacén eliminado'
+            'message' => 'Unidad de medida eliminada'
         ]);
     }
 }

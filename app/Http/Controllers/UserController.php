@@ -13,7 +13,7 @@ class UserController extends Controller
         if (!$user) {
             return response()->json([
                 'status', false,
-                'message' => 'El usuario que intenta modificar no existe'
+                'message' => 'El usuario al que intenta modificar el negocio actual no existe'
             ]);
         }
         $user->current_bussiness = $request->bussiness_id;

@@ -12,6 +12,8 @@ use App\Http\Controllers\ClientOperationsController;
 use App\Http\Controllers\CurrenciesController;
 use App\Http\Controllers\OperationController;
 use App\Http\Controllers\OperationDetailsController;
+use App\Http\Controllers\StoreController;
+use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -41,7 +43,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('v1/auth/logout', [AuthController::class, 'logout']);
 
     // Users
-    Route::post('v1/users/setCurrentBussiness', [UserController::class, 'setCurrentBussiness']);
+    Route::put('v1/users/setCurrentBussiness', [UserController::class, 'setCurrentBussiness']);
 
     // Currencies
     Route::post('v1/currencies/all', [CurrenciesController::class, 'getCurrencies']);
@@ -94,4 +96,18 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Balance
     Route::post('v1/balance', [BalanceController::class, 'getBalance']);
+
+    // Stores
+    Route::post('v1/stores/all', [StoreController::class, 'getAll']);
+    Route::post('v1/stores/byId', [StoreController::class, 'getById']);
+    Route::post('v1/stores', [StoreController::class, 'addStore']);
+    Route::put('v1/stores', [StoreController::class, 'editStore']);
+    Route::delete('v1/stores', [StoreController::class, 'deleteStore']);
+
+    // Units
+    Route::post('v1/units/all', [UnitController::class, 'getAll']);
+    Route::post('v1/units/byId', [UnitController::class, 'getById']);
+    Route::post('v1/units', [UnitController::class, 'addUnit']);
+    Route::put('v1/units', [UnitController::class, 'editUnit']);
+    Route::delete('v1/units', [UnitController::class, 'deleteUnit']);
 });
