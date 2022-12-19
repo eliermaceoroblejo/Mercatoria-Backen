@@ -70,7 +70,7 @@ class UnitController extends Controller
         $unit = Unit::create([
             'name' => $request->name,
             'abbreviation' => $request->abbreviation,
-            'unitary' => $request->unitary,
+            'unitary' => boolval( $request->unitary),
             'bussiness_id' => $request->bussiness_id,
             'slug' => $slug
         ]);
@@ -121,13 +121,19 @@ class UnitController extends Controller
             ]);
         }
 
-        $unit = Unit::create([
-            'name' => $request->name,
-            'abbreviation' => $request->abbreviation,
-            'unitary' => $request->unitary,
-            'bussiness_id' => $request->bussiness_id,
-            'slug' => $slug
-        ]);
+        // $unit = Unit::create([
+        //     'name' => $request->name,
+        //     'abbreviation' => $request->abbreviation,
+        //     'unitary' => $request->unitary,
+        //     'bussiness_id' => $request->bussiness_id,
+        //     'slug' => $slug
+        // ]);
+
+        $unit->name = $request->name;
+        $unit->abbreviation = $request->abbreviation;
+        $unit->unitary = boolval($request->unitary);
+        $unit->slug = $slug;
+        $unit->save();
 
         return response()->json([
             'status' => true,
@@ -139,7 +145,7 @@ class UnitController extends Controller
     public function deleteUnit(Request $request)
     {
         $unit = Unit::where('bussiness_id', $request->bussiness_id)
-            ->where('id', $request->id)->fist();
+            ->where('id', $request->id)->first();
         
         if(!$unit) {
             return response()->json([

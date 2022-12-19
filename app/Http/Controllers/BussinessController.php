@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bussiness;
+use App\Models\Unit;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -129,6 +131,22 @@ class BussinessController extends Controller
                 'message' => 'No existe el negocio que desea eliminar'
             ]);
         }
+
+        $userBussiness = User::where('id', $request->user_id)->first();
+        if($userBussiness->current_bussiness == $request->bussiness_id) {
+            return response()->json([
+                'status' => false,
+                'message' => 'No puede eliminar el negocio que tiene activo'
+            ]);
+        }
+
+        // $units = Unit::where('bussiness_id', $request->bussiness_id)->get();
+        // if ($units) {
+        //     return response()->json([
+        //         'status' => false,
+        //         'message' => 'El negocio que desea elimina tiene unidades de medidas que no han sido eliminadas.Imposible continuar'
+        //     ]);
+        // }
 
         $bussiness->delete();
 

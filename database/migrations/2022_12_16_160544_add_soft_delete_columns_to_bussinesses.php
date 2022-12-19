@@ -13,14 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('units', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('slug');
-            $table->string('abbreviation');
-            $table->boolean('unitary');
-            $table->foreignId('bussiness_id')->references('id')->on('bussinesses');
-            $table->timestamps();
+        Schema::table('bussinesses', function (Blueprint $table) {
+            $table->softDeletes();
         });
     }
 
@@ -31,6 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('units');
+        Schema::table('bussinesses', function (Blueprint $table) {
+            $table->dropSoftDeletes();
+        });
     }
 };

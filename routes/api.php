@@ -12,6 +12,7 @@ use App\Http\Controllers\ClientOperationsController;
 use App\Http\Controllers\CurrenciesController;
 use App\Http\Controllers\OperationController;
 use App\Http\Controllers\OperationDetailsController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
@@ -110,4 +111,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('v1/units', [UnitController::class, 'addUnit']);
     Route::put('v1/units', [UnitController::class, 'editUnit']);
     Route::delete('v1/units', [UnitController::class, 'deleteUnit']);
+
+    // Products
+    Route::post('v1/products/all', [ProductController::class, 'getAll']);
+    Route::post('v1/products/byId', [ProductController::class, 'getById']);
+    Route::post('v1/products', [ProductController::class, 'addProduct']);
+    Route::put('v1/products', [ProductController::class, 'editProduct']);
+    Route::delete('v1/products', [ProductController::class, 'deleteProduct']);
 });
