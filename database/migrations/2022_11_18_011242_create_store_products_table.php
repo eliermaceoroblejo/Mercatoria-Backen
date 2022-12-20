@@ -17,9 +17,9 @@ return new class extends Migration
             // $table->id();a
             $table->foreignId('store_id')->references('id')->on('stores');
             $table->foreignId('product_id')->references('id')->on('products');
-            // $table->integer('product_id')->unsigned();
             $table->double('amount');
             $table->decimal('price', 19, 7);
+            $table->decimal('sale_price', 19, 7);
             $table->double('total');
             $table->foreignId('bussiness_id')->references('id')->on('bussinesses');
             $table->timestamps();

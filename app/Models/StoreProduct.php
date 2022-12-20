@@ -22,7 +22,9 @@ class StoreProduct extends Model
     /**
      * @var array
      */
-    protected $fillable = ['store_id', 'product_id', 'bussiness_id', 'amount', 'price', 'total', 'created_at', 'updated_at'];
+    protected $fillable = ['store_id', 'product_id', 'bussiness_id', 'amount', 'price', 'sale_price', 'total'];
+
+    protected $hidden = ['created_at', 'updated_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
