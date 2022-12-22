@@ -112,4 +112,24 @@ class Account extends Model
     {
         return $this->hasManyThrough(Client::class, ClientOperations::class, 'account_id', 'id', 'id');
     }
+
+    /**
+     * Get the storeAccount that owns the Account
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function storeAccount()
+    {
+        return $this->hasMany(StoreAccounts::class);
+    }
+
+    /**
+     * Get all of the storeProducts for the Account
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function storeProducts()
+    {
+        return $this->hasMany(StoreProduct::class);
+    }
 }

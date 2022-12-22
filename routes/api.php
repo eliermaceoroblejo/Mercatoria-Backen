@@ -13,7 +13,9 @@ use App\Http\Controllers\CurrenciesController;
 use App\Http\Controllers\OperationController;
 use App\Http\Controllers\OperationDetailsController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\StoreAccountsController;
 use App\Http\Controllers\StoreController;
+use App\Http\Controllers\StoreProductController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -65,6 +67,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('v1/accounts', [AccountController::class, 'deleteAccount']);
     Route::delete('v1/accounts/lock', [AccountController::class, 'lockAccount']);
     Route::post('v1/accounts/clientOperations', [AccountController::class, 'getAllAccountClientOperations']);
+    Route::post('v1/accounts/byType', [AccountController::class, 'getAccountByType']);
 
     // Accounts Group
     Route::post('v1/groups', [AccountGroupController::class, 'getGroups']);
@@ -118,4 +121,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('v1/products', [ProductController::class, 'addProduct']);
     Route::put('v1/products', [ProductController::class, 'editProduct']);
     Route::delete('v1/products', [ProductController::class, 'deleteProduct']);
+
+    // Store Products
+    Route::post('v1/store-products/all', [StoreProductController::class, 'getAll']);
+
+    // Store Accounts
+    Route::post('v1/store-accounts/byStore', [StoreAccountsController::class, 'getByStore']);
+    Route::post('v1/store-accounts', [StoreAccountsController::class, 'addStoreAccount']);
+    Route::delete('v1/store-accounts', [StoreAccountsController::class, 'deleteStoreAccount']);
 });

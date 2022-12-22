@@ -53,4 +53,24 @@ class Store extends Model
     {
         return $this->hasMany('App\Models\Movement');
     }
+
+    /**
+     * Get all of the accounts for the Store
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function accounts()
+    {
+        return $this->hasMany(Account::class);
+    }
+
+    /**
+     * Get all of the storeAccount for the Store
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function storeAccount()
+    {
+        return $this->hasMany(StoreAccounts::class);
+    }
 }

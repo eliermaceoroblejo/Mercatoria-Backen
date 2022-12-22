@@ -147,4 +147,14 @@ class Bussiness extends Model
     {
         return $this->hasMany(ClientOperations::class);
     }
+
+    /**
+     * Get all of the storeAccount for the Bussiness
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function storeAccount()
+    {
+        return $this->hasMany(storeAccount::class);
+    }
 }

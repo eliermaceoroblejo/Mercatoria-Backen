@@ -22,7 +22,7 @@ class StoreProduct extends Model
     /**
      * @var array
      */
-    protected $fillable = ['store_id', 'product_id', 'bussiness_id', 'amount', 'price', 'sale_price', 'total'];
+    protected $fillable = ['store_id', 'product_id', 'account_id', 'bussiness_id', 'amount', 'price', 'sale_price', 'total'];
 
     protected $hidden = ['created_at', 'updated_at'];
 
@@ -48,5 +48,15 @@ class StoreProduct extends Model
     public function store()
     {
         return $this->belongsTo('App\Models\Store');
+    }
+
+    /**
+     * Get the account that owns the StoreProduct
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function account()
+    {
+        return $this->belongsTo(Account::class);
     }
 }

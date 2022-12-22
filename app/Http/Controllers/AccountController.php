@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Account;
+use App\Models\AccountGroup;
+use App\Models\AccountType;
 use App\Models\Balance;
 use App\Models\Client;
 use App\Models\ClientOperations;
@@ -319,6 +321,25 @@ class AccountController extends Controller
             'status' => true,
             'message' => 'OK',
             'data' => $arr
+        ]);
+    }
+
+    public function getAccountByType(Request $request)
+    {
+        $accountType = AccountGroup::whereIn('code', $request->code)->get();
+        $types = [];
+        foreach ($accountType as $type) {
+            array_push($types, $type->id);
+        }
+        $accounts = Account::with('accountGroup')
+            ->where('bussiness_id', $request->bussiness_id)
+            ->whereIn('account_group_id', $types)->get();
+
+
+        return response()->json([
+            'status' => true,
+            'message' => 'OK',
+            'data' => $accounts
         ]);
     }
 }
