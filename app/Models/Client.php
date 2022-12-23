@@ -55,4 +55,14 @@ class Client extends Model
     {
         return $this->hasMany(ClientOperations::class);
     }
+
+    /**
+     * Get all of the entryAccountsProvider for the Bussiness
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function entryAccountsProvider()
+    {
+        return $this->hasMany(EntryAccountsProviders::class);
+    }
 }

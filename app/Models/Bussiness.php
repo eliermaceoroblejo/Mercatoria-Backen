@@ -157,4 +157,14 @@ class Bussiness extends Model
     {
         return $this->hasMany(storeAccount::class);
     }
+
+    /**
+     * Get all of the entryAccountsProvider for the Bussiness
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function entryAccountsProvider()
+    {
+        return $this->hasMany(EntryAccountsProviders::class);
+    }
 }

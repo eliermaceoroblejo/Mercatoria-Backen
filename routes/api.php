@@ -10,6 +10,7 @@ use App\Http\Controllers\BussinessController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ClientOperationsController;
 use App\Http\Controllers\CurrenciesController;
+use App\Http\Controllers\EntryAccountsProvidersController;
 use App\Http\Controllers\OperationController;
 use App\Http\Controllers\OperationDetailsController;
 use App\Http\Controllers\ProductController;
@@ -18,6 +19,7 @@ use App\Http\Controllers\StoreController;
 use App\Http\Controllers\StoreProductController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
+use App\Models\EntryAccountsProviders;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -129,4 +131,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('v1/store-accounts/byStore', [StoreAccountsController::class, 'getByStore']);
     Route::post('v1/store-accounts', [StoreAccountsController::class, 'addStoreAccount']);
     Route::delete('v1/store-accounts', [StoreAccountsController::class, 'deleteStoreAccount']);
+
+    // Entry Accounts Provider
+    Route::post('v1/entry-accounts-provider/all', [EntryAccountsProvidersController::class, 'getAll']);
 });

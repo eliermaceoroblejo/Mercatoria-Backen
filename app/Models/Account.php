@@ -132,4 +132,14 @@ class Account extends Model
     {
         return $this->hasMany(StoreProduct::class);
     }
+
+    /**
+     * Get all of the entryAccountsProvider for the Bussiness
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function entryAccountsProvider()
+    {
+        return $this->hasMany(EntryAccountsProviders::class);
+    }
 }

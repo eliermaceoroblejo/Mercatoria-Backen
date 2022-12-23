@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Bussiness;
 use App\Models\Unit;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -44,34 +46,44 @@ class BussinessController extends Controller
 
     public function addBussiness(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'user_id' => 'required|numeric',
-        ]);
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => false,
-                'message' => $validator->errors()
+        DB::beginTransaction();
+        try {
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|string|max:255',
+                'user_id' => 'required|numeric',
             ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => $validator->errors()
+                ]);
+            }
+    
+            $slug = Str::slug($request->name);
+            $bussiness = Bussiness::where('slug', $slug)->first();
+            if ($bussiness) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'El negocio que desea agregar ya existe'
+                ]);
+            }
+    
+            $bussiness = Bussiness::create([
+                'name' => $request->name,
+                'user_id' => $request->user_id,
+                'avatar' => null,
+                'slug' => $slug
+                // 'avatar' => $avatar_image
+            ]);
+
+            EntryAccountsProvidersController::addEntryAccountsProviders($bussiness->id);
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw new Exception($th->getMessage());
         }
 
-        $slug = Str::slug($request->name);
-        $bussiness = Bussiness::where('slug', $slug)->first();
-        if ($bussiness) {
-            return response()->json([
-                'status' => false,
-                'message' => 'El negocio que desea agregar ya existe'
-            ]);
-        }
-
-        $bussiness = Bussiness::create([
-            'name' => $request->name,
-            'user_id' => $request->user_id,
-            'avatar' => null,
-            'slug' => $slug
-            // 'avatar' => $avatar_image
-        ]);
-
+        DB::commit();
         return response()->json([
             'status' => true,
             'message' => 'Negocio creado',
@@ -123,7 +135,9 @@ class BussinessController extends Controller
 
     public function deleteBussiness(Request $request)
     {
-        $bussiness = Bussiness::where('user_id', $request->user_id)
+        DB::beginTransaction();
+        try {
+            $bussiness = Bussiness::where('user_id', $request->user_id)
             ->where('id', $request->id);
         if (!$bussiness) {
             return response()->json([
@@ -140,15 +154,15 @@ class BussinessController extends Controller
             ]);
         }
 
-        // $units = Unit::where('bussiness_id', $request->bussiness_id)->get();
-        // if ($units) {
-        //     return response()->json([
-        //         'status' => false,
-        //         'message' => 'El negocio que desea elimina tiene unidades de medidas que no han sido eliminadas.Imposible continuar'
-        //     ]);
-        // }
-
+        EntryAccountsProvidersController::deleteEntryAccountsProvider($request->id);
+        
         $bussiness->delete();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw new Exception($th->getMessage());
+        }
+
+        DB::commit();
 
         return response()->json([
             'status' => true,
