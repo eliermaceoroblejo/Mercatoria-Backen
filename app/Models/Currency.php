@@ -27,7 +27,9 @@ class Currency extends Model
     /**
      * @var array
      */
-    protected $fillable = ['bussiness_id', 'name', 'abbreviation', 'rate', 'created_at', 'updated_at'];
+    protected $fillable = ['bussiness_id', 'name', 'abbreviation', 'rate', 'main'];
+
+    protected $hidden = ['created_at', 'updated_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

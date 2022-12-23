@@ -44,7 +44,7 @@ class StoreController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'bussiness_id' => 'required|numeric',
+            'bussiness_id' => 'required|numeric|min:1',
         ]);
 
         if ($validator->fails()) {
@@ -80,7 +80,7 @@ class StoreController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'bussiness_id' => 'required|numeric',
+            'bussiness_id' => 'required|numeric|min:1',
         ]);
 
         if ($validator->fails()) {

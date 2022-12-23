@@ -22,13 +22,8 @@ class MovementTypesSeeder extends Seeder
         $movementType->save();
 
         $movementType1 = new MovementType();
-        $movementType1->name = 'Vales de Insumo';
+        $movementType1->name = 'Ventas';
         $movementType1->in_out = false;
         $movementType1->save();
-
-        $movementType2 = new MovementType();
-        $movementType2->name = 'Ventas';
-        $movementType2->in_out = false;
-        $movementType2->save();
     }
 }

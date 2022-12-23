@@ -72,12 +72,12 @@ class AccountController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'number' => 'required|numeric|max:999',
-                'account_nature_id' => 'required|numeric',
-                'currency_id' => 'required|numeric',
-                'account_type' => 'required|numeric',
-                'account_group_id' => 'required|numeric',
+                'account_nature_id' => 'required|numeric|min:1',
+                'currency_id' => 'required|numeric|min:1',
+                'account_type' => 'required|numeric|min:1',
+                'account_group_id' => 'required|numeric|min:1',
                 'name' => 'required|string|max:255',
-                'bussiness_id' => 'required|numeric',
+                'bussiness_id' => 'required|numeric|min:1',
             ]);
 
             if ($validator->fails()) {

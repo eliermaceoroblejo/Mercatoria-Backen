@@ -90,7 +90,7 @@ class ClientController extends Controller
         $validator = Validator::make($request->all(), [
             'code' => 'required|string|max:255',
             'name' => 'required|string|max:255',
-            'bussiness_id' => 'required|numeric'
+            'bussiness_id' => 'required|numeric|min:1'
         ]);
 
         if ($validator->fails()) {

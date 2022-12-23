@@ -64,11 +64,24 @@ class CurrenciesController extends Controller
             ], 400);
         }
 
+        if ($request->main) {
+            $currency = Currency::where('bussiness_id', $request->bussiness_id)
+                ->where('main', 1)->first();
+
+            if ($currency) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Ya existe una moneda definida como base'
+                ]);
+            }
+        }
+
         $currency = Currency::create([
             'name' => $request->name,
             'abbreviation' => strtoupper($request->abbreviation),
             'rate' => $request->rate,
-            'bussiness_id' => $request->bussiness_id
+            'bussiness_id' => $request->bussiness_id,
+            'main' => $request->main
         ]);
 
         $currency->save();
@@ -94,6 +107,19 @@ class CurrenciesController extends Controller
             ]);
         }
 
+        if ($request->main) {
+            $currency = Currency::where('bussiness_id', $request->bussiness_id)
+                ->where('main', 1)
+                ->whereNot('id', $request->id)->first();
+
+            if ($currency) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Ya existe una moneda definida como base'
+                ]);
+            }
+        }
+
         $currency = Currency::where('bussiness_id', $request->bussiness_id)
             ->where('id', $request->id)->first();
         if (!$currency) {
@@ -103,9 +129,11 @@ class CurrenciesController extends Controller
             ]);
         }
 
+
         $currency->name = $request->name;
         $currency->abbreviation = strtoupper($request->abbreviation);
         $currency->rate = $request->rate;
+        $currency->main = $request->main;
 
         $currency->update();
 

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('abbreviation', 5);
             $table->double('rate');
+            $table->boolean('main')->default(false);
             $table->foreignId('bussiness_id')->references('id')->on('bussinesses');
             $table->timestamps();
         });

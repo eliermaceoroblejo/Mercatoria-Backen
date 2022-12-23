@@ -42,7 +42,7 @@ class UnitController extends Controller
     public function addUnit(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'bussiness_id' => 'required|numeric',
+            'bussiness_id' => 'required|numeric|min:1',
             'name' => 'required|string|max:255',
             'abbreviation' => 'required|string|max:255',
             'unitary' => 'required|boolean'
@@ -69,8 +69,8 @@ class UnitController extends Controller
 
         $unit = Unit::create([
             'name' => $request->name,
-            'abbreviation' => $request->abbreviation,
-            'unitary' => boolval( $request->unitary),
+            'abbreviation' => strtoupper($request->abbreviation),
+            'unitary' => boolval($request->unitary),
             'bussiness_id' => $request->bussiness_id,
             'slug' => $slug
         ]);
@@ -85,7 +85,7 @@ class UnitController extends Controller
     public function editUnit(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'bussiness_id' => 'required|numeric',
+            'bussiness_id' => 'required|numeric|min:1',
             'name' => 'required|string|max:255',
             'abbreviation' => 'required|string|max:255',
             'unitary' => 'required|boolean'
@@ -130,7 +130,7 @@ class UnitController extends Controller
         // ]);
 
         $unit->name = $request->name;
-        $unit->abbreviation = $request->abbreviation;
+        $unit->abbreviation = strtoupper($request->abbreviation);
         $unit->unitary = boolval($request->unitary);
         $unit->slug = $slug;
         $unit->save();
@@ -146,8 +146,8 @@ class UnitController extends Controller
     {
         $unit = Unit::where('bussiness_id', $request->bussiness_id)
             ->where('id', $request->id)->first();
-        
-        if(!$unit) {
+
+        if (!$unit) {
             return response()->json([
                 'status' => false,
                 'message' => 'No existe la unidad de medida con id: ' . $request->id

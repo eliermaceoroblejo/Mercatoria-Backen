@@ -30,7 +30,12 @@ class MovementDetail extends Model
     /**
      * @var array
      */
-    protected $fillable = ['movement_id', 'movement_type_id', 'product_id', 'amount', 'price', 'total', 'created_at', 'updated_at'];
+    protected $fillable = ['movement_id', 'movement_type_id', 'product_id', 'quantity', 'price', 'total'];
+
+    /**
+     * @var array
+     */
+    protected $hidden = ['created_at', 'updated_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

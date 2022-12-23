@@ -18,8 +18,8 @@ return new class extends Migration
             $table->foreignId('movement_id')->references('id')->on('movements');
             $table->foreignId('movement_type_id')->references('id')->on('movement_types');
             $table->foreignId('product_id')->references('id')->on('products');
-            // $table->integer('product_id')->unsigned();
-            $table->double('amount');
+            $table->foreignId('account_id')->references('id')->on('accounts');
+            $table->double('quantity');
             $table->decimal('price', 19, 7);
             $table->double('total');
             $table->timestamps();

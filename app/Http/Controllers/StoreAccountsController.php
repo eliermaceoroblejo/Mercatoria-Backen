@@ -32,7 +32,7 @@ class StoreAccountsController extends Controller
         $validator = Validator::make($request->all(), [
             'bussiness_id' => 'required|numeric',
             'store_id' => 'required|numeric',
-            'account_id' => 'required|numeric',
+            'account_id' => 'required|numeric|min:1',
         ]);
 
         if($validator->fails()) {

@@ -20,7 +20,11 @@ class StoreProductController extends Controller
                     ->where('id', $prod->product->unit_id)->first();
                 $prod->product_um = $unit->abbreviation;
 
+                $prod->account_number = $prod->account->number;
+                $prod->account_name = $prod->account->name;
+
                 unset($prod->product);
+                unset($prod->account);
             }
     
         return response()->json([

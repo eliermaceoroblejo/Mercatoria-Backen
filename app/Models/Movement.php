@@ -33,7 +33,10 @@ class Movement extends Model
     /**
      * @var array
      */
-    protected $fillable = ['movement_type_id', 'user_id', 'store_id', 'client_id', 'bussiness_id', 'total', 'created_at', 'updated_at'];
+    protected $fillable = ['movement_type_id', 'user_id', 'store_id', 'client_id', 'bussiness_id', 'discount', 
+        'overcharge', 'subtotal', 'importing_company', 'financial_expenses', 'transportation', 'manipulation', 'total', ];
+
+    protected $hidden = ['created_at', 'updated_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
