@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
             ModulesSeeder::class,
             UserSeeder::class,
             AccountGroupsSeeder::class,
-            MovementTypesSeeder::class
+            MovementTypesSeeder::class,
         ]);
     }
 }

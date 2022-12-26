@@ -134,4 +134,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Entry Accounts Provider
     Route::post('v1/entry-accounts-provider/all', [EntryAccountsProvidersController::class, 'getAll']);
+    Route::post('v1/entry-accounts-provider/byId', [EntryAccountsProvidersController::class, 'getById']);
+    Route::put('v1/entry-accounts-provider', [EntryAccountsProvidersController::class, 'editEntryAccountsProviders']);
 });

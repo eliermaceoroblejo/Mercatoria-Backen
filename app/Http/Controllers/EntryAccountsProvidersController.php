@@ -35,6 +35,25 @@ class EntryAccountsProvidersController extends Controller
         ]);
     }
 
+    public function getById(Request $request)
+    {
+        $entry = EntryAccountsProviders::where('bussiness_id', $request->bussiness_id)
+            ->where('id', $request->id)->first();
+
+        if (!$entry) {
+            return response()->json([
+                'status' => false,
+                'message' => 'No existe la información que solicita',
+            ], 400);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'OK',
+            'data' => $entry
+        ]);
+    }
+
     public static function addEntryAccountsProviders($bussiness_id)
     {
         $entry = new EntryAccountsProviders();
@@ -58,25 +77,27 @@ class EntryAccountsProvidersController extends Controller
         $entry3->save();
     }
 
-    public static function deleteEntryAccountsProvider($bussiness_id) {
+    public static function deleteEntryAccountsProvider($bussiness_id)
+    {
         EntryAccountsProviders::where('bussiness_id', $bussiness_id)->delete();
     }
 
-    public function editEntryAccountsProviders(Request $request) {
+    public function editEntryAccountsProviders(Request $request)
+    {
         $entry = EntryAccountsProviders::where('bussiness_id', $request->bussiness_id)
             ->where('id', $request->id)->first();
 
-        if(!$entry) {
+        if (!$entry) {
             return response()->json([
                 'status' => false,
                 'message' => 'No existe la información que está intentando modificar'
             ]);
         }
 
-        if($request->account_id) {
+        if ($request->account_id > 0) {
             $account = Account::where('bussiness_id', $request->bussiness_id)
                 ->where('id', $request->account_id)->first();
-            if(!$account) {
+            if (!$account) {
                 return response()->json([
                     'status' => false,
                     'message' => 'La cuenta con id: ' . $request->account_id . ' no existe'
@@ -85,7 +106,7 @@ class EntryAccountsProvidersController extends Controller
             $account = Account::where('bussiness_id', $request->bussiness_id)
                 ->where('id', $request->account_id)
                 ->whereIn('account_group_id', ['2'])->get();
-            if(!$account) {
+            if (!$account) {
                 return response()->json([
                     'status' => false,
                     'message' => 'La cuenta con id: ' . $request->account_id . ' no está declarada como cuenta para aceptar pagos'
@@ -94,16 +115,24 @@ class EntryAccountsProvidersController extends Controller
             $entry->account_id = $request->account_id;
         }
 
-        if($request->client_id) {
+        if ($request->client_id > 0) {
             $client = Client::where('bussiness_id', $request->bussiness_id)
                 ->where('id', $request->client_id)->first();
+            if (!$client) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'El proveedor con id: ' . $request->account_id . ' no existe'
+                ]);
+            }
+            $entry->client_id = $request->client_id;
         }
-        if(!$client) {
-            return response()->json([
-                'status' => false,
-                'message' => 'El proveedor con id: ' . $request->account_id . ' no existe'
-            ]);
-        }
-        $entry->client_id = $request->client_id;
+
+        $entry->update();
+        
+        return response()->json([
+            'status' => true,
+            'message' => 'Datos actualizados',
+            'data' => $entry
+        ]);
     }
 }

@@ -101,7 +101,7 @@ class ClientController extends Controller
         }
 
         $slug = Str::slug($request->name);
-        $client = Client::where('user_id', $request->user_id)
+        $client = Client::where('bussiness_id', $request->bussiness_id)
             ->where('slug', $slug)->first();
         if ($client) {
             return response()->json([
@@ -110,7 +110,7 @@ class ClientController extends Controller
             ], 400);
         }
 
-        $client = Client::where('user_id', $request->user_id)
+        $client = Client::where('bussiness_id', $request->bussiness_id)
             ->where('code', $request->code)->first();
         if ($client) {
             return response()->json([
