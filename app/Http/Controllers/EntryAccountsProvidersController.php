@@ -113,6 +113,8 @@ class EntryAccountsProvidersController extends Controller
                 ]);
             }
             $entry->account_id = $request->account_id;
+        } else {
+            $entry->account_id = null;
         }
 
         if ($request->client_id > 0) {
@@ -125,10 +127,12 @@ class EntryAccountsProvidersController extends Controller
                 ]);
             }
             $entry->client_id = $request->client_id;
+        } else {
+            $entry->client_id = null;
         }
 
         $entry->update();
-        
+
         return response()->json([
             'status' => true,
             'message' => 'Datos actualizados',
