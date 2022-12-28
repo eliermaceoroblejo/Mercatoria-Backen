@@ -11,6 +11,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ClientOperationsController;
 use App\Http\Controllers\CurrenciesController;
 use App\Http\Controllers\EntryAccountsProvidersController;
+use App\Http\Controllers\MovementController;
 use App\Http\Controllers\OperationController;
 use App\Http\Controllers\OperationDetailsController;
 use App\Http\Controllers\ProductController;
@@ -136,4 +137,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('v1/entry-accounts-provider/all', [EntryAccountsProvidersController::class, 'getAll']);
     Route::post('v1/entry-accounts-provider/byId', [EntryAccountsProvidersController::class, 'getById']);
     Route::put('v1/entry-accounts-provider', [EntryAccountsProvidersController::class, 'editEntryAccountsProviders']);
+
+    // Movements
+    Route::post('v1/movements/byType', [MovementController::class, 'getByType']);
+    Route::post('v1/movements/byId', [MovementController::class, 'getById']);
 });

@@ -33,10 +33,12 @@ class Movement extends Model
     /**
      * @var array
      */
-    protected $fillable = ['movement_type_id', 'user_id', 'store_id', 'client_id', 'bussiness_id', 'discount', 
-        'overcharge', 'subtotal', 'importing_company', 'financial_expenses', 'transportation', 'manipulation', 'total', ];
+    protected $fillable = [
+        'movement_type_id', 'user_id', 'store_id', 'client_id', 'account_id', 'bussiness_id', 'reference', 'discount',
+        'overcharge', 'subtotal', 'importing_company', 'financial_expenses', 'transportation', 'manipulation', 'total',
+    ];
 
-    protected $hidden = ['created_at', 'updated_at'];
+    protected $hidden = ['updated_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -84,5 +86,15 @@ class Movement extends Model
     public function user()
     {
         return $this->belongsTo('App\Models\User');
+    }
+
+    /**
+     * Get the account that owns the Movement
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function account()
+    {
+        return $this->belongsTo(Account::class);
     }
 }

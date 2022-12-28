@@ -18,8 +18,10 @@ return new class extends Migration
             $table->foreignId('movement_type_id')->references('id')->on('movement_types');
             $table->foreignId('user_id')->references('id')->on('users');
             $table->foreignId('store_id')->references('id')->on('stores');
-            $table->foreignId('client_id')->references('id')->on('clients')->nullable();
+            $table->foreignId('client_id')->nullable()->references('id')->on('clients');
+            $table->foreignId('account_id')->nullable()->references('id')->on('accounts');
             $table->foreignId('bussiness_id')->references('id')->on('bussinesses');
+            $table->string('reference')->nullable();
             $table->double('discount')->default(0);
             $table->double('overcharge')->default(0);
             $table->double('subtotal')->default(0);
