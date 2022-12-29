@@ -22,7 +22,7 @@ class StoreProduct extends Model
     /**
      * @var array
      */
-    protected $fillable = ['store_id', 'product_id', 'account_id', 'bussiness_id', 'amount', 'price', 'sale_price', 'total'];
+    protected $fillable = ['store_id', 'product_id', 'account_id', 'bussiness_id', 'amount', 'price', 'total'];
 
     protected $hidden = ['created_at', 'updated_at'];
 
@@ -47,7 +47,7 @@ class StoreProduct extends Model
      */
     public function store()
     {
-        return $this->belongsTo('App\Models\Store');
+        return $this->belongsTo(Store::class);
     }
 
     /**

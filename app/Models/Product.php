@@ -28,7 +28,7 @@ class Product extends Model
     /**
      * @var array
      */
-    protected $fillable = ['unit_id', 'bussiness_id', 'code', 'name', 'slug'];
+    protected $fillable = ['unit_id', 'bussiness_id', 'code', 'name', 'slug', 'sale_price'];
 
     protected $hidden = ['created_at', 'updated_at'];
 

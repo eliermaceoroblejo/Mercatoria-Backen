@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('code')->unsigned();
             $table->string('name');
             $table->string('slug');
+            $table->decimal('sale_price', 19, 7)->default(0);
             $table->foreignId('unit_id')->references('id')->on('units');
             $table->foreignId('bussiness_id')->references('id')->on('bussinesses');
             $table->timestamps();

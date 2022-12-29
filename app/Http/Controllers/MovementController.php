@@ -66,7 +66,8 @@ class MovementController extends Controller
             unset($movement->account);
         }
 
-        $movement->movement_details = MovementDetailsController::getById($request->id, $request->bussiness_id, $request->store_id);
+        $movement->movement_details =
+            MovementDetailsController::getById($request->id, $request->bussiness_id, $request->store_id);
 
 
         return response()->json([
@@ -74,5 +75,9 @@ class MovementController extends Controller
             'message' => 'OK',
             'data' => $movement
         ]);
+    }
+
+    public function addMovement(Request $request)
+    {
     }
 }

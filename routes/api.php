@@ -141,4 +141,5 @@ Route::middleware('auth:sanctum')->group(function () {
     // Movements
     Route::post('v1/movements/byType', [MovementController::class, 'getByType']);
     Route::post('v1/movements/byId', [MovementController::class, 'getById']);
+    Route::post('v1/movements', [MovementController::class, 'addMovement']);
 });

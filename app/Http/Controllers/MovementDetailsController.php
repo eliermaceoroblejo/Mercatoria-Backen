@@ -27,7 +27,7 @@ class MovementDetailsController extends Controller
                 ->where('store_id', $store_id)
                 ->where('product_id', $detail->product_id)->first();
 
-            $detail->product_sale_price = $product_store ? $product_store->sale_price : 0;
+            $detail->product_sale_price = $detail->product->sale_price;
 
             unset($detail->product);
         }

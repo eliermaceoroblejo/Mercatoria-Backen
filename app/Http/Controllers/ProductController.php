@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\StoreAccounts;
 use App\Models\StoreProduct;
 use App\Models\Unit;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -48,59 +51,83 @@ class ProductController extends Controller
 
     public function addProduct(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'code' => 'required|numeric',
-            'unit_id' => 'required|numeric|min:1',
-            'bussiness_id' => 'required|numeric',
-            'name' => 'required|string|max:255'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => false,
-                'message' => $validator->errors()
+        DB::beginTransaction();
+        try {
+            $validator = Validator::make($request->all(), [
+                'code' => 'required|numeric',
+                'unit_id' => 'required|numeric|min:1',
+                'bussiness_id' => 'required|numeric',
+                'name' => 'required|string|max:255',
+                'sale_price' => 'required|numeric'
             ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => $validator->errors()
+                ]);
+            }
+
+            $slug = Str::slug($request->name);
+
+            $product = Product::where('bussiness_id', $request->bussiness_id)
+                ->where('slug', $slug)->first();
+
+            if ($product) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Ya existe un producto con ese nombre'
+                ]);
+            }
+
+            $product = Product::where('bussiness_id', $request->bussiness_id)
+                ->where('code', $request->code)->first();
+
+            if ($product) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Ya existe un producto con ese código'
+                ]);
+            }
+
+            $um = Unit::where('bussiness_id', $request->bussiness_id)
+                ->where('id', $request->unit_id)->first();
+            if (!$um) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'La unidad de medida que intenta asociar al producto no existe para este negocio'
+                ]);
+            }
+
+            $product = Product::create([
+                'code' => $request->code,
+                'name' => $request->name,
+                'slug' => $slug,
+                'unit_id' => $request->unit_id,
+                'bussiness_id' => $request->bussiness_id,
+                'sale_price' => $request->sale_price
+            ]);
+
+            if ($request->inventory_account > 0) {
+                $storeAccount = StoreAccounts::where('bussiness_id', $request->bussiness_id)
+                    ->where('id', $request->inventory_account)->first();
+                StoreProduct::create([
+                    'store_id' => $request->store_id,
+                    'product_id' => $product->id,
+                    'account_id' => $storeAccount->account_id,
+                    'amount' => 0,
+                    'price' => 0,
+                    'total' => 0,
+                    'bussiness_id' => $request->bussiness_id
+                ]);
+            }
+
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw new Exception($th->getMessage());
         }
 
-        $slug = Str::slug($request->name);
-
-        $product = Product::where('bussiness_id', $request->bussiness_id)
-            ->where('slug', $slug)->first();
-
-        if ($product) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Ya existe un producto con ese nombre'
-            ]);
-        }
-
-        $product = Product::where('bussiness_id', $request->bussiness_id)
-            ->where('code', $request->code)->first();
-
-        if ($product) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Ya existe un producto con ese código'
-            ]);
-        }
-
-        $um = Unit::where('bussiness_id', $request->bussiness_id) 
-            ->where('id', $request->unit_id)->first();
-        if(!$um) {
-            return response()->json([
-                'status' => false,
-                'message' => 'La unidad de medida que intenta asociar al producto no existe para este negocio'
-            ]);
-        }
-        
-        $product = Product::create([
-            'code' => $request->code,
-            'name' => $request->name,
-            'slug' => $slug,
-            'unit_id' => $request->unit_id,
-            'bussiness_id' => $request->bussiness_id
-        ]);
-        
         $product->UM = $um->abbreviation;
 
         return response()->json([
@@ -116,7 +143,8 @@ class ProductController extends Controller
             'code' => 'required|numeric',
             'unit_id' => 'required|numeric',
             'bussiness_id' => 'required|numeric',
-            'name' => 'required|string|max:255'
+            'name' => 'required|string|max:255',
+            'sale_price' => 'required|numeric'
         ]);
 
         if ($validator->fails()) {
@@ -161,9 +189,9 @@ class ProductController extends Controller
             }
         }
 
-        $um = Unit::where('bussiness_id', $request->bussiness_id) 
+        $um = Unit::where('bussiness_id', $request->bussiness_id)
             ->where('id', $request->unit_id)->first();
-        if(!$um) {
+        if (!$um) {
             return response()->json([
                 'status' => false,
                 'message' => 'La unidad de medida que intenta asociar al producto no existe para este negocio'
@@ -172,6 +200,7 @@ class ProductController extends Controller
 
         $product->name = $request->name;
         $product->unit_id = $request->unit_id;
+        $product->sale_price = $request->sale_price;
         $product->slug = $slug;
 
         $product->save();
