@@ -2,9 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Account;
 use App\Models\Bussiness;
+use App\Models\Client;
 use App\Models\Movement;
+use App\Models\MovementType;
+use App\Models\Store;
+use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class MovementController extends Controller
 {
@@ -79,5 +87,117 @@ class MovementController extends Controller
 
     public function addMovement(Request $request)
     {
+        DB::beginTransaction();
+        try {
+            $validator = Validator::make($request->all(), [
+                'movement_type_id' => 'required|numeric|min:1',
+                'store_id' => 'required|numeric|min:1',
+                'user_id' => 'required|numeric|min:1',
+                'client_id' => 'required|numeric|min:1',
+                'account_id' => 'required|numeric|min:1',
+                'bussiness_id' => 'required|numeric|min:1',
+                'reference' => 'required|string|max:255',
+                'subtotal' => 'required|numeric',
+                'total' => 'required|numeric'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => $validator->errors()
+                ]);
+            }
+
+            $userId = User::where('id', $request->user_id)->first();
+            if (!$userId) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'El usuario con id: ' . $request->user_id . ' no existe'
+                ]);
+            }
+
+            $bussiness = Bussiness::where('id', $request->bussiness_id)->first();
+            if (!$bussiness) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'El negocio con id: ' . $request->bussiness_id . ' no existe'
+                ]);
+            }
+
+            if ($bussiness->user_id != $request->user_id) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'El negocio con id: ' . $request->bussiness_id . ' no está asociado al user con id: ' . $request->user_id
+                ]);
+            }
+
+            $movementTypeId = MovementType::where('id', $request->movement_type_id)->first();
+            if (!$movementTypeId) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'El tipo de movimiento con id: ' . $request->movement_type_id . ' no existe'
+                ]);
+            }
+
+            $storeId = Store::where('bussiness_id', $request->bussiness_id)
+                ->where('id', $request->store_id)->first();
+            if (!$storeId) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'El almacén con id: ' . $request->store_id . ' no existe'
+                ]);
+            }
+
+            if ($request->client_id) {
+                $client = Client::where('bussiness_id', $request->bussiness_id)
+                    ->where('id', $request->client_id)->first();
+                if (!$client) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'El cliente con id: ' . $request->client_id . ' no existe'
+                    ]);
+                }
+            }
+
+            $account = Account::where('bussiness_id', $request->bussiness_id)
+                ->where('id', $request->account_id)->first();
+            if (!$account) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'L cuenta con id: ' . $request->account_id . ' no existe'
+                ]);
+            }
+
+            $movement = Movement::create([
+                'movement_type_id' => $request->movement_type_id,
+                'store_id' => $request->store_id,
+                'user_id' => $request->user_id,
+                'client_id' => $request->client_id,
+                'account_id' => $request->account_id,
+                'bussiness_id' => $request->bussiness_id,
+                'reference' => $request->reference,
+                'subtotal' => $request->subtotal,
+                'total' => $request->total
+            ]);
+
+            MovementDetailsController::addMovementDetail(
+                $request->bussiness_id,
+                $request->store_id,
+                $movement->id,
+                $request->movement_type_id,
+                $request->movement_details
+            );
+
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Movimiento guardado',
+                'data' => $movement
+            ]);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw new Exception($th->getMessage());
+        }
     }
 }

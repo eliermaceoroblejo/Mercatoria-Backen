@@ -20,6 +20,13 @@ use Illuminate\Database\Eloquent\Model;
 class StoreProduct extends Model
 {
     /**
+     * The "type" of the auto-incrementing ID.
+     * 
+     * @var string
+     */
+    protected $keyType = 'integer';
+
+    /**
      * @var array
      */
     protected $fillable = ['store_id', 'product_id', 'account_id', 'bussiness_id', 'amount', 'price', 'total'];

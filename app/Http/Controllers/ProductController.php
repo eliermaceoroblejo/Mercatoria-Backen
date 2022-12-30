@@ -49,6 +49,54 @@ class ProductController extends Controller
         ]);
     }
 
+    public function getByCode(Request $request)
+    {
+        $product = Product::with('unit')
+            ->where('bussiness_id', $request->bussiness_id)
+            ->where('code', $request->code)->first();
+
+        if (!$product) {
+            return response()->json([
+                'status' => false,
+                'message' => 'El producto con código: ' . $request->code . ' no existe'
+            ]);
+        }
+        $product->UM = $product->unit->abbreviation;
+        $product->UM_unitary = $product->unit->unitary;
+        unset($product->unit);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'OK',
+            'data' => $product
+        ]);
+    }
+
+    public function getByCodeByStore(Request $request)
+    {
+        $product = Product::with('unit')
+            ->where('bussiness_id', $request->bussiness_id)
+            ->where('code', $request->code)
+            ->store('store_id', $request->store_id)->first();
+
+        if (!$product) {
+            return response()->json([
+                'status' => false,
+                'message' => 'El producto con código: ' . $request->code . ' no existe en el almacén con id: ' . $request->store_id
+            ]);
+        }
+
+        $product->UM = $product->unit->abbreviation;
+        $product->UM_unitary = $product->unit->unitary;
+        unset($product->unit);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'OK',
+            'data' => $product
+        ]);
+    }
+
     public function addProduct(Request $request)
     {
         DB::beginTransaction();

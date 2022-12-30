@@ -124,6 +124,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('v1/products', [ProductController::class, 'addProduct']);
     Route::put('v1/products', [ProductController::class, 'editProduct']);
     Route::delete('v1/products', [ProductController::class, 'deleteProduct']);
+    Route::post('v1/products/byCode', [ProductController::class, 'getByCode']);
+    Route::post('v1/products/byCodeByStore', [ProductController::class, 'getByCodeByStore']);
 
     // Store Products
     Route::post('v1/store-products/all', [StoreProductController::class, 'getAll']);

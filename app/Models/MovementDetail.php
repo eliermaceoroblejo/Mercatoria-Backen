@@ -30,7 +30,7 @@ class MovementDetail extends Model
     /**
      * @var array
      */
-    protected $fillable = ['movement_id', 'movement_type_id', 'product_id', 'quantity', 'price', 'total'];
+    protected $fillable = ['movement_id', 'movement_type_id', 'product_id', 'account_id', 'quantity', 'price', 'total'];
 
     /**
      * @var array
