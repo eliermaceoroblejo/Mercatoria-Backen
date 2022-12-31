@@ -17,8 +17,8 @@ class OperationController extends Controller
     public function getAll(Request $request)
     {
         try {
-            $operations = Operation::with(['module', 'user'])->where('bussiness_id', $request->bussiness_id)
-                ->where('module_id', $request->module_id)->get();
+            $operations = Operation::with(['module', 'user'])->where('bussiness_id', $request->bussiness_id)->get();
+            // ->where('module_id', $request->module_id)->get();
             foreach ($operations as $operation) {
                 $operation->module_name = $operation->module->name;
                 $operation->username = $operation->user->name;
@@ -76,23 +76,15 @@ class OperationController extends Controller
                 ]);
             }
 
-            $operation = Operation::create([
-                'module_id' => $request->module_id,
-                'user_id' => $request->user_id,
-                'bussiness_id' => $request->bussiness_id,
-                'total_debit' => floatval($request->total_debit),
-                'total_credit' => floatval($request->total_credit),
-            ]);
-
-            foreach ($request->details as $detail) {
-                OperationDetailsController::addOperationDetail(
-                    $request->bussiness_id,
-                    $request->module_id,
-                    $detail,
-                    $operation->id,
-                    $request->revert
-                );
-            }
+            $operation = self::createOperation(
+                $request->module_id,
+                $request->user_id,
+                $request->bussiness_id,
+                $request->total_debit,
+                $request->total_credit,
+                $request->details,
+                $request->revert
+            );
 
             DB::commit();
 
@@ -107,6 +99,38 @@ class OperationController extends Controller
                 'status' => false,
                 'message' => $th->getMessage()
             ]);
+        }
+    }
+
+    public static function createOperation(
+        $module_id,
+        $user_id,
+        $bussiness_id,
+        $total_debit,
+        $total_credit,
+        $details,
+        $revert
+    ) {
+        try {
+            $operation = Operation::create([
+                'module_id' => $module_id,
+                'user_id' => $user_id,
+                'bussiness_id' => $bussiness_id,
+                'total_debit' => floatval($total_debit),
+                'total_credit' => floatval($total_credit),
+            ]);
+
+            foreach ($details as $detail) {
+                OperationDetailsController::addOperationDetail(
+                    $bussiness_id,
+                    $$module_id,
+                    $detail,
+                    $operation->id,
+                    $revert
+                );
+            }
+        } catch (\Throwable $th) {
+            throw new Exception($th->getMessage());
         }
     }
 

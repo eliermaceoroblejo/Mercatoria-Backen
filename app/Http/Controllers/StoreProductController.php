@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\StoreAccounts;
 use App\Models\StoreProduct;
 use App\Models\Unit;
 use Illuminate\Http\Request;
@@ -33,6 +34,42 @@ class StoreProductController extends Controller
             'status' => true,
             'message' => 'OK',
             'data' => $products
+        ]);
+    }
+
+    public function addStoreProduct(Request $request)
+    {
+        $product = StoreProduct::where('bussiness_id', $request->bussiness_id)
+            ->where('store_id', $request->store_id)
+            ->where('product_id', $request->product_id)->first();
+        if ($product) {
+            return response()->json([
+                'status' => true,
+            ]);
+        }
+
+        $storeAccount = StoreAccounts::where('bussiness_id', $request->bussiness_id)
+            ->where('id', $request->account_id)->first();
+        if (!$storeAccount) {
+            return response()->json([
+                'status' => false,
+                'message' => 'No existe la cuenta con id: ' . $request->account_id
+            ]);
+        }
+
+        $product = StoreProduct::create([
+            'bussiness_id' => $request->bussiness_id,
+            'store_id' => $request->store_id,
+            'account_id' => $storeAccount->account_id,
+            'product_id' => $request->product_id,
+            'amount' => 0,
+            'price' => 0,
+            'total' => 0
+        ]);
+        return response()->json([
+            'status' => true,
+            'message' => 'Producto agregado',
+            'data' => $product
         ]);
     }
 }

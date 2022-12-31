@@ -129,6 +129,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Store Products
     Route::post('v1/store-products/all', [StoreProductController::class, 'getAll']);
+    Route::post('v1/store-products', [StoreProductController::class, 'addStoreProduct']);
 
     // Store Accounts
     Route::post('v1/store-accounts/byStore', [StoreAccountsController::class, 'getByStore']);

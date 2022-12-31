@@ -164,7 +164,7 @@ class MovementController extends Controller
             if (!$account) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'L cuenta con id: ' . $request->account_id . ' no existe'
+                    'message' => 'La cuenta con id: ' . $request->account_id . ' no existe'
                 ]);
             }
 
@@ -176,8 +176,14 @@ class MovementController extends Controller
                 'account_id' => $request->account_id,
                 'bussiness_id' => $request->bussiness_id,
                 'reference' => $request->reference,
+                'discount' => $request->discount,
+                'overcharge' => $request->overcharge,
                 'subtotal' => $request->subtotal,
-                'total' => $request->total
+                'total' => $request->total,
+                'importing_company' => $request->importing_company,
+                'financial_expenses' => $request->financial_expenses,
+                'transportation' => $request->transportation,
+                'manipulation' => $request->manipulation
             ]);
 
             MovementDetailsController::addMovementDetail(
@@ -187,6 +193,8 @@ class MovementController extends Controller
                 $request->movement_type_id,
                 $request->movement_details
             );
+            $total_debit = 0;
+            $total_credit = 0;
 
             DB::commit();
 
