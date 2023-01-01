@@ -85,7 +85,7 @@ class ClientOperationsController extends Controller
 
         if ($clientOperationReferenceByAccount && !$revert) {
             // if ($account->account_group_id == 2 && $details['client_id'] == $clientOperationReferenceByAccount->client_id)
-            throw new Exception('Ya existe una operación con esa referencia');
+            throw new Exception('Ya existe una operación con la referencia ' . $details['reference'] . ' para el cliente ' . $details['client_id']);
         }
 
         $movement = 0;

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Account;
+use App\Models\AccountGroup;
 use App\Models\Bussiness;
 use App\Models\Client;
+use App\Models\EntryAccountsProviders;
 use App\Models\Movement;
 use App\Models\MovementType;
 use App\Models\Store;
@@ -235,6 +237,140 @@ class MovementController extends Controller
             $total_debit += $account->account_nature_id == 1 ? $request->total : 0;
             $total_credit += $account->account_nature_id == 2 ? $request->total : 0;
             array_push($operationDetails, $operationDetail);
+
+            if ($request->movement_type_id == 1) { // Son compras
+                $entryAccountsProviders = EntryAccountsProviders::where('bussiness_id', $request->bussiness_id)->get();
+                if ($request->importing_company > 0) {
+                    if (!$entryAccountsProviders[0]->account_id) {
+                        throw new Exception('No ha definido una cuenta para la IMPORTADORA');
+                    }
+                    if (!$entryAccountsProviders[0]->client_id) {
+                        throw new Exception('No ha definido un cliente para la IMPORTADORA');
+                    }
+                    $client = Client::where('bussiness_id', $request->bussiness_id)
+                        ->where('id', $entryAccountsProviders[0]->client_id)->first();
+                    if (!$client) {
+                        throw new Exception('El cliente con id: ' . $entryAccountsProviders[0]->client_id . ' no existe');
+                    }
+
+                    $account = Account::where('bussiness_id', $request->bussiness_id)
+                        ->where('id', $entryAccountsProviders[0]->account_id)->first();
+                    if (!$account) {
+                        throw new Exception('No existe la cuenta con id: ' . $entryAccountsProviders[0]->account_id);
+                    }
+                    $accountType = AccountGroup::where('id', $account->account_group_id)->first();
+                    if ($accountType->code != 2) {
+                        throw new Exception('La cuenta definida para la IMPORTADORA no es una cuenta de PAGOS');
+                    }
+                    $operationDetail = array(
+                        'account_id' => $entryAccountsProviders[0]->account_id,
+                        'reference' => $request->reference,
+                        'client' => $client->code,
+                        'client_id' => $client->id,
+                        'amount' => $request->importing_company,
+                        'operationNature' => $account->account_nature_id == 1 ? 1 : 2
+                    );
+                    array_push($operationDetails, $operationDetail);
+                }
+
+                if ($request->financial_expenses > 0) {
+                    if (!$entryAccountsProviders[1]->account_id) {
+                        throw new Exception('No ha definido una cuenta para los GASTOS FINANCIEROS');
+                    }
+                    if (!$entryAccountsProviders[1]->client_id) {
+                        throw new Exception('No ha definido un cliente para los GASTOS FINANCIEROS');
+                    }
+                    $client = Client::where('bussiness_id', $request->bussiness_id)
+                        ->where('id', $entryAccountsProviders[1]->client_id)->first();
+                    if (!$client) {
+                        throw new Exception('El cliente con id: ' . $entryAccountsProviders[1]->client_id . ' no existe');
+                    }
+                    $account = Account::where('bussiness_id', $request->bussiness_id)
+                        ->where('id', $entryAccountsProviders[1]->account_id)->first();
+                    if (!$account) {
+                        throw new Exception('No existe la cuenta con id: ' . $entryAccountsProviders[1]->account_id);
+                    }
+                    $accountType = AccountGroup::where('id', $account->account_group_id)->first();
+                    if ($accountType->code != 2) {
+                        throw new Exception('La cuenta definida para los GASTOS FINANCIEROS no es una cuenta de PAGOS');
+                    }
+                    $operationDetail = array(
+                        'account_id' => $entryAccountsProviders[1]->account_id,
+                        'reference' => $request->reference,
+                        'client' => $client->code,
+                        'client_id' => $client->id,
+                        'amount' => $request->financial_expenses,
+                        'operationNature' => $account->account_nature_id == 1 ? 1 : 2
+                    );
+                    array_push($operationDetails, $operationDetail);
+                }
+
+                if ($request->transportation > 0) {
+                    if (!$entryAccountsProviders[2]->account_id) {
+                        throw new Exception('No ha definido una cuenta para la TRANSPORTACION');
+                    }
+                    if (!$entryAccountsProviders[2]->client_id) {
+                        throw new Exception('No ha definido un cliente para la TRANSPORTACION');
+                    }
+                    $client = Client::where('bussiness_id', $request->bussiness_id)
+                        ->where('id', $entryAccountsProviders[2]->client_id)->first();
+                    if (!$client) {
+                        throw new Exception('El cliente con id: ' . $entryAccountsProviders[2]->client_id . ' no existe');
+                    }
+                    $account = Account::where('bussiness_id', $request->bussiness_id)
+                        ->where('id', $entryAccountsProviders[2]->account_id)->first();
+                    if (!$account) {
+                        throw new Exception('No existe la cuenta con id: ' . $entryAccountsProviders[2]->account_id);
+                    }
+                    $accountType = AccountGroup::where('id', $account->account_group_id)->first();
+                    if ($accountType->code != 2) {
+                        throw new Exception('La cuenta definida para la TRANSPORTACIÓN no es una cuenta de PAGOS');
+                    }
+                    $operationDetail = array(
+                        'account_id' => $entryAccountsProviders[2]->account_id,
+                        'reference' => $request->reference,
+                        'client' => $client->code,
+                        'client_id' => $client->id,
+                        'amount' => $request->transportation,
+                        'operationNature' => $account->account_nature_id == 1 ? 1 : 2
+                    );
+                    array_push($operationDetails, $operationDetail);
+                }
+
+                if ($request->manipulation > 0) {
+                    if (!$entryAccountsProviders[3]->account_id) {
+                        throw new Exception('No ha definido una cuenta para la TRANSPORTACION');
+                    }
+                    if (!$entryAccountsProviders[3]->client_id) {
+                        throw new Exception('No ha definido un cliente para la TRANSPORTACION');
+                    }
+                    $client = Client::where('bussiness_id', $request->bussiness_id)
+                        ->where('id', $entryAccountsProviders[3]->client_id)->first();
+                    if (!$client) {
+                        throw new Exception('El cliente con id: ' . $entryAccountsProviders[3]->client_id . ' no existe');
+                    }
+                    $account = Account::where('bussiness_id', $request->bussiness_id)
+                        ->where('id', $entryAccountsProviders[3]->account_id)->first();
+                    if (!$account) {
+                        throw new Exception('No existe la cuenta con id: ' . $entryAccountsProviders[3]->account_id);
+                    }
+                    $accountType = AccountGroup::where('id', $account->account_group_id)->first();
+                    if ($accountType->code != 2) {
+                        throw new Exception('La cuenta definida para la MANIPULACIÓN no es una cuenta de PAGOS');
+                    }
+                    $operationDetail = array(
+                        'account_id' => $entryAccountsProviders[3]->account_id,
+                        'reference' => $request->reference,
+                        'client' => $client->code,
+                        'client_id' => $client->id,
+                        'amount' => $request->manipulation,
+                        'operationNature' => $account->account_nature_id == 1 ? 1 : 2
+                    );
+                    array_push($operationDetails, $operationDetail);
+                }
+            }
+
+
 
             OperationController::createOperation(
                 3,
