@@ -8,11 +8,14 @@ use App\Models\Client;
 use App\Models\Movement;
 use App\Models\MovementType;
 use App\Models\Store;
+use App\Models\StoreProduct;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use PhpParser\Node\Expr\Cast\Object_;
+use stdClass;
 
 class MovementController extends Controller
 {
@@ -148,16 +151,16 @@ class MovementController extends Controller
                 ]);
             }
 
-            if ($request->client_id) {
-                $client = Client::where('bussiness_id', $request->bussiness_id)
-                    ->where('id', $request->client_id)->first();
-                if (!$client) {
-                    return response()->json([
-                        'status' => false,
-                        'message' => 'El cliente con id: ' . $request->client_id . ' no existe'
-                    ]);
-                }
+            $client = Client::where('bussiness_id', $request->bussiness_id)
+                ->where('id', $request->client_id)->first();
+            if (!$client) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'El cliente con id: ' . $request->client_id . ' no existe'
+                ]);
             }
+            // if ($request->client_id) {
+            // }
 
             $account = Account::where('bussiness_id', $request->bussiness_id)
                 ->where('id', $request->account_id)->first();
@@ -193,8 +196,56 @@ class MovementController extends Controller
                 $request->movement_type_id,
                 $request->movement_details
             );
+
             $total_debit = 0;
             $total_credit = 0;
+
+            $operationDetails = [];
+            foreach ($request->movement_details as $detail) {
+                $product = StoreProduct::where('bussiness_id', $request->bussiness_id)
+                    ->where('store_id', $request->store_id)
+                    ->where('product_id', $detail['product_id'])->first();
+
+                if (!$product) {
+                    throw new Exception('No existe el producto con id: ' . $detail['product_code'] . ' en el almacén ' . $request->store_id);
+                }
+
+                $operationDetail = array(
+                    'account_id' => $product->account_id,
+                    'reference' => '',
+                    'client' => '',
+                    'amount' => $detail['product_import'],
+                    'operationNature' => $request->movement_type_id == 1 ? 1 : 2
+                );
+
+                $total_debit += $request->movement_type_id == 1 ?  $operationDetail['amount'] : 0;
+                $total_credit += $request->movement_type_id == 2 ?  $operationDetail['amount'] : 0;
+                array_push($operationDetails, $operationDetail);
+            }
+
+            // Cuenta de la compra
+            $operationDetail = [
+                'account_id' => $account->id,
+                'reference' => $request->reference,
+                'client_id' => $request->client_id,
+                'client' => $client->code,
+                'amount' => $request->total,
+                'operationNature' => $account->account_nature_id == 1 ? 1 : 2
+            ];
+            $total_debit += $account->account_nature_id == 1 ? $request->total : 0;
+            $total_credit += $account->account_nature_id == 2 ? $request->total : 0;
+            array_push($operationDetails, $operationDetail);
+
+            OperationController::createOperation(
+                3,
+                $request->user_id,
+                $request->bussiness_id,
+                $total_debit,
+                $total_credit,
+                $operationDetails,
+                false
+            );
+
 
             DB::commit();
 

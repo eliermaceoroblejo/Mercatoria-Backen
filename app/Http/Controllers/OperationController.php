@@ -123,7 +123,7 @@ class OperationController extends Controller
             foreach ($details as $detail) {
                 OperationDetailsController::addOperationDetail(
                     $bussiness_id,
-                    $$module_id,
+                    $module_id,
                     $detail,
                     $operation->id,
                     $revert
