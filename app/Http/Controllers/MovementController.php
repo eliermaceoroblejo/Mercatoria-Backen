@@ -225,7 +225,7 @@ class MovementController extends Controller
                 array_push($operationDetails, $operationDetail);
             }
 
-            // Cuenta de la compra
+            // Cuenta de la compra/venta
             $operationDetail = [
                 'account_id' => $account->id,
                 'reference' => $request->reference,
@@ -369,8 +369,6 @@ class MovementController extends Controller
                     array_push($operationDetails, $operationDetail);
                 }
             }
-
-
 
             OperationController::createOperation(
                 3,
