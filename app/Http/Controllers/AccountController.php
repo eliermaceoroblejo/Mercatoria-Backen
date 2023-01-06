@@ -4,16 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Account;
 use App\Models\AccountGroup;
-use App\Models\AccountType;
 use App\Models\Balance;
 use App\Models\Client;
-use App\Models\ClientOperations;
 use App\Models\OperationDetail;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use PhpParser\Node\Expr\Cast\Object_;
 
 class AccountController extends Controller
 {
@@ -308,6 +305,20 @@ class AccountController extends Controller
 
     public function getAllAccountClientOperations(Request $request)
     {
+        $accounts = Account::where('bussiness_id', $request->bussiness_id)->get();
+        if (!$accounts || $accounts->count() == 0) {
+            return response()->json([
+                'status' => false,
+                'message' => 'No se han definido cuentas para este negocio',
+            ]);
+        }
+        $clients = Client::where('bussiness_id', $request->bussiness_id)->get();
+        if (!$clients || $clients->count == 0) {
+            return response()->json([
+                'status' => false,
+                'message' => 'No se han definido clientes/proveedores para este negocio',
+            ]);
+        }
         $arr = DB::select('SELECT a.number  as accountNumber, a.name as accountName, c.code as clientCode, 
             c.name as clientName, SUM(movement) AS Importe 
             FROM client_operations AS co

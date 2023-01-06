@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Account;
+use App\Models\Client;
 use App\Models\ClientOperations;
 use Exception;
 use Illuminate\Http\Request;
@@ -12,6 +13,20 @@ class ClientOperationsController extends Controller
 {
     public function getAllClientOperations(Request $request)
     {
+        $accounts = Account::where('bussiness_id', $request->bussiness_id)->get();
+        if (!$accounts || $accounts->count() == 0) {
+            return response()->json([
+                'status' => false,
+                'message' => 'No se han definido cuentas para este negocio',
+            ]);
+        }
+        $clients = Client::where('bussiness_id', $request->bussiness_id)->get();
+        if (!$clients || $clients->count == 0) {
+            return response()->json([
+                'status' => false,
+                'message' => 'No se han definido clientes/proveedores para este negocio',
+            ]);
+        }
         $arr = DB::select('SELECT c.id as client_id, c.code as clientCode, c.name as clientName, a.id as account_id, a.number accountNumber, a.name as accountName
             FROM clients AS C
             INNER JOIN client_operations co ON c.id = co.client_id
