@@ -85,7 +85,7 @@ class AuthController extends Controller
         $user->pin_expired_in = now()->addHours(24);
         $user->update();
 
-        // Send pin via Email
+        //TODO: Send pin via Email
 
         return response()->json([
             'status' => true,
@@ -147,6 +147,53 @@ class AuthController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Sesión cerrada'
+        ]);
+    }
+
+    public function changePassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()
+            ]);
+        }
+
+        $user = User::where('id', $request->user_id)->first();
+        if (!$user) {
+            return response()->json([
+                'status' => false,
+                'message' => 'No se encuentra el usuario con id: ' . $request->user_id
+            ], 400);
+        }
+
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Datos incorrectos'
+            ], 401);
+        }
+
+        if ($request->new_password != $request->new_password2) {
+            return response()->json([
+                'status' => false,
+                'message' => 'No coinciden las contraseñas nuevas'
+            ], 400);
+        }
+
+        $user->password = Hash::make($request->new_password);
+        $user->update();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Contraseña actualizada',
+            'data' => $user
         ]);
     }
 }

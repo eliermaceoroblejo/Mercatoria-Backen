@@ -15,6 +15,7 @@ use App\Http\Controllers\MovementController;
 use App\Http\Controllers\OperationController;
 use App\Http\Controllers\OperationDetailsController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StoreAccountsController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\StoreProductController;
@@ -47,9 +48,11 @@ Route::post('v1/auth/reset-password', [AuthController::class, 'reset_password'])
 Route::middleware('auth:sanctum')->group(function () {
     // Auth
     Route::post('v1/auth/logout', [AuthController::class, 'logout']);
+    Route::post('v1/auth/change-password', [AuthController::class, 'changePassword']);
 
     // Users
     Route::put('v1/users/setCurrentBussiness', [UserController::class, 'setCurrentBussiness']);
+    Route::post('v1/users/byId', [UserController::class, 'getUserById']);
 
     // Currencies
     Route::post('v1/currencies/all', [CurrenciesController::class, 'getCurrencies']);
@@ -71,6 +74,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('v1/accounts/lock', [AccountController::class, 'lockAccount']);
     Route::post('v1/accounts/clientOperations', [AccountController::class, 'getAllAccountClientOperations']);
     Route::post('v1/accounts/byType', [AccountController::class, 'getAccountByType']);
+    Route::post('v1/accounts/byNature', [AccountController::class, 'getAccountByNature']);
 
     // Accounts Group
     Route::post('v1/groups', [AccountGroupController::class, 'getGroups']);

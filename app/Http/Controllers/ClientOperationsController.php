@@ -12,12 +12,12 @@ class ClientOperationsController extends Controller
 {
     public function getAllClientOperations(Request $request)
     {
-        $arr = DB::select('SELECT c.code as clientCode, c.name as clientName, a.number accountNumber, a.name as accountName, SUM(co.movement) AS Movement
+        $arr = DB::select('SELECT c.id as client_id, c.code as clientCode, c.name as clientName, a.id as account_id, a.number accountNumber, a.name as accountName
             FROM clients AS C
             INNER JOIN client_operations co ON c.id = co.client_id
             INNER JOIN accounts a ON a.id = co.account_id
             WHERE co.bussiness_id = ?
-            GROUP BY c.code, c.name, a.number, a.name
+            GROUP BY c.id, c.code, c.name, a.id, a.number, a.name
             ORDER BY c.code, a.number', [$request->bussiness_id]);
 
         return response()->json([

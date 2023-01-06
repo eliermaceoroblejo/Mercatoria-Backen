@@ -14,7 +14,7 @@ class UserController extends Controller
             'id' => 'required|numeric|min:1'
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return response()->json([
                 'status' => false,
                 'message' => $validator->errors()
@@ -31,6 +31,22 @@ class UserController extends Controller
         $user->current_bussiness = $request->bussiness_id;
         $user->update();
 
+        return response()->json([
+            'status' => true,
+            'message' => 'OK',
+            'data' => $user
+        ]);
+    }
+
+    public function getUserById(Request $request)
+    {
+        $user = User::where('id', $request->user_id)->first();
+        if (!$user) {
+            return response()->json([
+                'status' => false,
+                'message' => 'No existe el usuario con id: ' . $request->user_id
+            ]);
+        }
         return response()->json([
             'status' => true,
             'message' => 'OK',
