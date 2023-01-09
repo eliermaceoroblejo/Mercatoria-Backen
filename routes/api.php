@@ -104,6 +104,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Client Operations
     Route::post('v1/clientoperations/all', [ClientOperationsController::class, 'getAllClientOperations']);
+    Route::post('v1/clientoperations/byCode', [ClientOperationsController::class, 'getByCode']);
+    Route::post('v1/clientoperations/byCodeByAccount', [ClientOperationsController::class, 'getOperationsByCodeByAccount']);
+    Route::post('v1/clientoperations/byAccountByCode', [ClientOperationsController::class, 'getOperationsByAccountByCode']);
 
     // Balance
     Route::post('v1/balance', [BalanceController::class, 'getBalance']);

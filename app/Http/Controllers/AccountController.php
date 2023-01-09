@@ -306,26 +306,26 @@ class AccountController extends Controller
     public function getAllAccountClientOperations(Request $request)
     {
         $accounts = Account::where('bussiness_id', $request->bussiness_id)->get();
-        if (!$accounts || $accounts->count() == 0) {
+        if (!$accounts) {
             return response()->json([
                 'status' => false,
                 'message' => 'No se han definido cuentas para este negocio',
             ]);
         }
         $clients = Client::where('bussiness_id', $request->bussiness_id)->get();
-        if (!$clients || $clients->count == 0) {
+        if (!$clients) {
             return response()->json([
                 'status' => false,
                 'message' => 'No se han definido clientes/proveedores para este negocio',
             ]);
         }
-        $arr = DB::select('SELECT a.number  as accountNumber, a.name as accountName, c.code as clientCode, 
+        $arr = DB::select('SELECT a.id as account_id, a.number  as accountNumber, a.name as accountName, c.id as client_id, c.code as clientCode, 
             c.name as clientName, SUM(movement) AS Importe 
             FROM client_operations AS co
             INNER JOIN accounts AS a ON a.id = co.account_id
             INNER JOIN clients AS C ON c.id = co.client_id
             WHERE co.bussiness_id = ?
-            GROUP BY co.bussiness_id, c.code, c.name, a.number, a.name
+            GROUP BY co.bussiness_id, c.id, c.code, c.name, a.id, a.number, a.name
             ORDER BY a.number', [$request->bussiness_id]);
 
         return response()->json([

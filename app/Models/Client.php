@@ -53,7 +53,7 @@ class Client extends Model
      */
     public function operations()
     {
-        return $this->hasMany(ClientOperations::class);
+        return $this->hasMany(ClientOperations::class, 'client_id', 'id');
     }
 
     /**

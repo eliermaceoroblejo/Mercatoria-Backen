@@ -14,14 +14,14 @@ class ClientOperationsController extends Controller
     public function getAllClientOperations(Request $request)
     {
         $accounts = Account::where('bussiness_id', $request->bussiness_id)->get();
-        if (!$accounts || $accounts->count() == 0) {
+        if (!$accounts) {
             return response()->json([
                 'status' => false,
                 'message' => 'No se han definido cuentas para este negocio',
             ]);
         }
         $clients = Client::where('bussiness_id', $request->bussiness_id)->get();
-        if (!$clients || $clients->count == 0) {
+        if (!$clients) {
             return response()->json([
                 'status' => false,
                 'message' => 'No se han definido clientes/proveedores para este negocio',
@@ -44,7 +44,8 @@ class ClientOperationsController extends Controller
 
     public function getByCode(Request $request)
     {
-        $clientBalance = ClientOperations::with(['accounts', 'clients'])->where('bussiness_id', $request->bussiness_id)
+        $clientBalance = ClientOperations::with(['accounts', 'clients'])
+            ->where('bussiness_id', $request->bussiness_id)
             ->where('client_id', $request->client_id)->get();
 
         foreach ($clientBalance as $client) {
@@ -93,15 +94,15 @@ class ClientOperationsController extends Controller
             throw new Exception('No existe la cuenta ' . $details['account'] . 'en el catálogo');
         }
 
-        $clientOperationReferenceByAccount = ClientOperations::where('bussiness_id', $bussiness_id)
-            ->where('account_id', $details['account_id'])
-            ->where('client_id', $details['client_id'])
-            ->where('reference', $details['reference'])->first();
+        // $clientOperationReferenceByAccount = ClientOperations::where('bussiness_id', $bussiness_id)
+        //     ->where('account_id', $details['account_id'])
+        //     ->where('client_id', $details['client_id'])
+        //     ->where('reference', $details['reference'])->first();
 
-        if ($clientOperationReferenceByAccount && !$revert) {
-            // if ($account->account_group_id == 2 && $details['client_id'] == $clientOperationReferenceByAccount->client_id)
-            throw new Exception('Ya existe una operación con la referencia ' . $details['reference'] . ' para el cliente ' . $details['client_id']);
-        }
+        // if ($clientOperationReferenceByAccount && !$revert) {
+        //     // if ($account->account_group_id == 2 && $details['client_id'] == $clientOperationReferenceByAccount->client_id)
+        //     throw new Exception('Ya existe una operación con la referencia ' . $details['reference'] . ' para el cliente ' . $details['client_id']);
+        // }
 
         $movement = 0;
         if ($details['operationNature'] == 1) {
@@ -116,6 +117,70 @@ class ClientOperationsController extends Controller
             'account_id' => $details['account_id'],
             'movement' => $movement,
             'reference' => $details['reference']
+        ]);
+    }
+
+    public function getOperationsByCodeByAccount(Request $request)
+    {
+        $client = Client::where('bussiness_id', $request->bussiness_id)
+            ->where('id', $request->client_id)->first();
+        if (!$client) {
+            throw new Exception('No existe el cliente con id: ' . $request->client_id);
+        }
+        $account = Account::where('bussiness_id', $request->bussiness_id)
+            ->where('id', $request->account_id)->first();
+        if (!$account) {
+            throw new Exception('No existe la cuenta con id: ' . $request->account_id);
+        }
+
+        $operationsByClientByAccount = ClientOperations::where('bussiness_id', $request->bussiness_id)
+            ->where('client_id', $request->client_id)
+            ->where('account_id', $request->account_id)->get();
+        $operationsByClientByAccount->makeVisible('created_at')->toArray();
+
+        foreach ($operationsByClientByAccount as $operation) {
+            $operation->account_number = $account->number;
+            $operation->account_name = $account->name;
+            unset($operation->client_id);
+            unset($operation->bussiness_id);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'OK',
+            'data' => $operationsByClientByAccount
+        ]);
+    }
+
+    public function getOperationsByAccountByCode(Request $request)
+    {
+        $client = Client::where('bussiness_id', $request->bussiness_id)
+            ->where('id', $request->client_id)->first();
+        if (!$client) {
+            throw new Exception('No existe el cliente con id: ' . $request->client_id);
+        }
+        $account = Account::where('bussiness_id', $request->bussiness_id)
+            ->where('id', $request->account_id)->first();
+        if (!$account) {
+            throw new Exception('No existe la cuenta con id: ' . $request->account_id);
+        }
+
+        $operationsByClientByAccount = ClientOperations::where('bussiness_id', $request->bussiness_id)
+            ->where('client_id', $request->client_id)
+            ->where('account_id', $request->account_id)->get();
+        $operationsByClientByAccount->makeVisible('created_at')->toArray();
+
+        foreach ($operationsByClientByAccount as $operation) {
+            $operation->client_code = $client->code;
+            $operation->client_name = $client->name;
+            unset($operation->account_id);
+            unset($operation->bussiness_id);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'OK',
+            'data' => $operationsByClientByAccount
         ]);
     }
 }
